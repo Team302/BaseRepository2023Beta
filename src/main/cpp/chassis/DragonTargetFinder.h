@@ -23,43 +23,43 @@
 class DragonTargetFinder
 {
     public:
-//  in: Current Position Pose2d
-//  out: Rotation2d Current rotation relative to field frame.
+        //  in: Current Position Pose2d
+        //  out: Rotation2d Current rotation relative to field frame.
         frc::Rotation2d GetCurrentRotaion(frc::Pose2d);
 
-//   in: Current Position Pose2d
-//   out: Transform2d robot distance from target X and Y. R is mute due to target at 0_deg.
+        //   in: Current Position Pose2d
+        //   out: Transform2d robot distance from target X and Y. R is mute due to target at 0_deg.
         frc::Transform2d GetDistance2TargetXYR(frc::Pose2d);
 
-//  in: Current Position Pose2d
-//  out: int field quadrant of robot current pose. Relative to target and center robot.
+        //  in: Current Position Pose2d
+        //  out: int field quadrant of robot current pose. Relative to target and center robot.
         int GetFieldQuadrant(frc::Pose2d);
     
-//   in:
-//   out: Pose2d Field position of target center x,y,r(0_deg)    
-        frc::Pose2d GetPosCenterTarget();
+        //   in:
+        //   out: Pose2d Field position of target center x,y,r(0_deg)    
+        frc::Pose2d GetPosCenterTarget() {return frc::Pose2d(8.212_m, 4.162_m,0_deg);};
     
-//   in: Current Position Pose2d
-//   out: double Target angle relative to robots current rotation 0 to 180, -180 to 0    
+        //   in: Current Position Pose2d
+        //   out: double Target angle relative to robots current rotation 0 to 180, -180 to 0    
         double GetAngle2Target(frc::Pose2d);
 
 
-//    in: Current Position Pose2d
-//    out: double distance (meters) Field position, Center robot to center of target
+        //    in: Current Position Pose2d
+        //    out: double distance (meters) Field position, Center robot to center of target
         double GetDistance2TargetHyp(frc::Pose2d);
 
     
-//    in: Current Position Pose2d
-//    out: Target angle as double... Field angle robot center to center target    
+        //    in: Current Position Pose2d
+        //    out: Target angle as double... Field angle robot center to center target    
         double GetTargetAngleD(frc::Pose2d);
 
-//    in: Pose2d
-//    out: Target angle in Rotation 2d... Field angle robot center to center target
+        //    in: Pose2d
+        //    out: Target angle in Rotation 2d... Field angle robot center to center target
         frc::Rotation2d GetTargetAngleR2d(frc::Pose2d);
     
 
-//   in: double x,double y - field center target position xy meters as double
-//   out:
+        //   in: double x,double y - field center target position xy meters as double
+        //   out:
         void setPosCenterTarget(double x, double y);
 
 

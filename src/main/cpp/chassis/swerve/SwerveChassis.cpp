@@ -25,6 +25,7 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Transform2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/angular_acceleration.h>
@@ -95,7 +96,7 @@ SwerveChassis::SwerveChassis
     m_poseOpt(PoseEstimatorEnum::WPI),
     m_pose(),
     m_offsetPoseAngle(0_deg),  //not used at the moment
-    m_timer(),
+    //m_timer(),
     m_drive(units::velocity::meters_per_second_t(0.0)),
     m_steer(units::velocity::meters_per_second_t(0.0)),
     m_rotate(units::angular_velocity::radians_per_second_t(0.0)),
@@ -108,8 +109,8 @@ SwerveChassis::SwerveChassis
     m_targetHeading(units::angle::degree_t(0)),
     m_limelight(LimelightFactory::GetLimelightFactory()->GetLimelight())
 {
-    m_timer.Reset();
-    m_timer.Start();
+    //m_timer.Reset();
+    //m_timer.Start();
 
     frontLeft.get()->Init( wheelDiameter, maxSpeed, maxAngularSpeed, maxAcceleration, maxAngularAcceleration, m_frontLeftLocation );
     frontRight.get()->Init( wheelDiameter, maxSpeed, maxAngularSpeed, maxAcceleration, maxAngularAcceleration, m_frontRightLocation );
@@ -591,8 +592,9 @@ void SwerveChassis::UpdateOdometry()
     else if (m_poseOpt==PoseEstimatorEnum::EULER_AT_CHASSIS)
     {
         // get change in time
-        auto deltaT = m_timer.Get();
-        m_timer.Reset();
+        units::time::second_t deltaT(0.02);
+        //auto deltaT = m_timer.Get();
+        //m_timer.Reset();
 
         // get the information from the last pose 
         auto startX = m_pose.X();

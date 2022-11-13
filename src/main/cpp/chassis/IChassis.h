@@ -47,6 +47,7 @@ class IChassis
         enum CHASSIS_TYPE
         {
             DIFFERENTIAL, 
+            MECANUM,
             SWERVE
         };
 

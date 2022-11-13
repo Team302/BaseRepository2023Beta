@@ -100,7 +100,7 @@ class SwerveModule
         /// @brief Get the current state of the module (speed of the wheel and angle of the wheel)
         /// @returns SwerveModuleState
         frc::SwerveModuleState GetState() const;
-
+        
         /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)
         /// @param [in] const SwerveModuleState& referenceState:   state to set the module to
         /// @returns void
@@ -122,6 +122,7 @@ class SwerveModule
             units::length::meter_t  x,
             units::length::meter_t  y
         );
+
         
     private:
         // Note:  the following was taken from the WPI code and tweaked because we were seeing some weird 

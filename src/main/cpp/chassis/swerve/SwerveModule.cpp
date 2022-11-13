@@ -27,6 +27,7 @@
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include <units/angle.h>
+#include <units/length.h>
 #include <units/velocity.h>
 
 // Team 302 includes
@@ -247,6 +248,8 @@ SwerveModuleState SwerveModule::GetState() const
     SwerveModuleState state{mps,angle};
     return state;
 }
+
+
 
 
 /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)

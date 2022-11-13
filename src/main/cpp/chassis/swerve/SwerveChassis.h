@@ -23,9 +23,11 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/Timer.h>
+#include <frc/kinematics/SwerveModuleState.h>
+//#include <frc/Timer.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -243,7 +245,7 @@ class SwerveChassis : public IChassis
         PoseEstimatorEnum                                           m_poseOpt;
         frc::Pose2d                                                 m_pose;
         units::angle::degree_t                                      m_offsetPoseAngle;
-        frc::Timer                                                  m_timer;
+        //frc::Timer                                                  m_timer;
         units::velocity::meters_per_second_t                        m_drive;
         units::velocity::meters_per_second_t                        m_steer;
         units::angular_velocity::radians_per_second_t               m_rotate;
@@ -262,20 +264,13 @@ class SwerveChassis : public IChassis
 
 
         // Gains are for example purposes only - must be determined for your own robot!
-        //Clean up to get clearer information
-        //frc::SwerveModulePosition m_leftFrontPosition(units::length::meter_t(0.0), frc::Rotation2d(units::angle::radian_t(0.0)));
-        //frc::SwerveModulePosition m_leftBackPosition(units::length::meter_t(0.0), frc::Rotation2d(units::angle::radian_t(0.0)));
-        //frc::SwerveModulePosition m_rightFrontPosition(units::length::meter_t(0.0), frc::Rotation2d(units::angle::radian_t(0.0)));
-        //frc::SwerveModulePosition m_rightBackPosition(units::length::meter_t(0.0), frc::Rotation2d(units::angle::radian_t(0.0)));
-        //const wpi::array<ServeModulePosition,4> m_positions(m_leftFrontPosition, m_rightFrontPosition, m_leftBackPosition, m_rightBackPosition);
-        //frc::SwerveDrivePoseEstimator<4> m_poseEstimator{  frc::Rotation2d(), 
-        //                                                   frc::Pose2d(), 
-        //                                                   m_positions,  
-        //                                                   m_kinematics,
-        //                                                   {0.1, 0.1, 0.1},   // state standard deviations
-        //                                                   {0.05},            // local measurement standard deviations
-        //                                                   {0.1, 0.1, 0.1} }; // vision measurement standard deviations
-        //frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
+        frc::SwerveDrivePoseEstimator<4> m_poseEstimator{   frc::Rotation2d{},
+                                                            frc::Pose2d{},
+                                                           {m_frontLeft.GetPosition(), m_frontRight.GetPosition(), m_backLeft.GetPosition(), m_backRight.GetPosition()},
+                                                            m_kinematics,
+                                                           {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1},
+                                                           {0.05, 0.05, 0.05, 0.05, 0.05},
+                                                           {0.1, 0.1, 0.1}};
 
         const double kPMaintainHeadingControl = 1.5; //4.0, 3.0
         const double kPAutonSpecifiedHeading = 3.0;  // 4.0
