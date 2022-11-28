@@ -43,12 +43,9 @@ class DifferentialChassis : public IChassis {
                             std::string                                     controlfilename);
 
         IChassis::CHASSIS_TYPE GetType() const override;
-        void Drive(frc::ChassisSpeeds chassisSpeeds);
         void Drive
         (
-            frc::ChassisSpeeds            chassisSpeeds,
-            IChassis::CHASSIS_DRIVE_MODE  mode,
-            IChassis::HEADING_OPTION      headingOption
+            frc::ChassisSpeeds            chassisSpeeds
         ) override;
         
         inline void Initialize() override {};
@@ -63,7 +60,6 @@ class DifferentialChassis : public IChassis {
         units::length::inch_t GetWheelDiameter() const override ;
         units::length::inch_t GetTrack() const override;
         units::angle::degree_t GetYaw() const override;
-        void SetTargetHeading(units::angle::degree_t targetYaw) override;
         void SetEncodersToZero() override;
 
 

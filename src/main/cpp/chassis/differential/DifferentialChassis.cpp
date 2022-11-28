@@ -56,16 +56,6 @@ IChassis::CHASSIS_TYPE DifferentialChassis::GetType() const
     return IChassis::CHASSIS_TYPE::DIFFERENTIAL;
 }
 
-void DifferentialChassis::Drive
-(
-    frc::ChassisSpeeds            chassisSpeeds,
-    IChassis::CHASSIS_DRIVE_MODE  mode,
-    IChassis::HEADING_OPTION      headingOption
-) 
-{
-    Drive(chassisSpeeds);
-}
-
 //Moves the robot
 void DifferentialChassis::Drive(frc::ChassisSpeeds chassisSpeeds)
 {
@@ -138,8 +128,5 @@ void DifferentialChassis::SetEncodersToZero()
         auto driveMotorSensors = fx->GetSensorCollection();
         driveMotorSensors.SetIntegratedSensorPosition(0, 0);
     }
-}
-void DifferentialChassis::SetTargetHeading(units::angle::degree_t targetYaw) 
-{
 }
 

@@ -68,7 +68,6 @@ class IHolonomicChassis
         ) = 0;
         
 
-        virtual units::angular_velocity::radians_per_second_t GetMaxAngularSpeed() const = 0;
         virtual void SetTargetHeading(units::angle::degree_t targetYaw) = 0;
 
 	    IHolonomicChassis() = default;

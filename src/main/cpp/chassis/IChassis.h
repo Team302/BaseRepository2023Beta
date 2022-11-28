@@ -74,6 +74,7 @@ class IChassis
         virtual units::length::inch_t GetWheelDiameter() const = 0;
         virtual units::length::inch_t GetTrack() const = 0;
         virtual units::velocity::meters_per_second_t GetMaxSpeed() const = 0;
+        virtual units::angular_velocity::radians_per_second_t GetMaxAngularSpeed() const = 0;
         virtual units::angle::degree_t GetYaw() const = 0;
         virtual void SetEncodersToZero() = 0;
 
