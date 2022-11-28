@@ -33,6 +33,7 @@
 #include <mechanisms/MechanismFactory.h>
 #include <utils/Logger.h>
 #include <mechanisms/StateMgrHelper.h>
+#include <chassis/IHolonomicChassis.h>
 
 // @ADDMECH include for your mechanism state
 
@@ -128,7 +129,7 @@ void CyclePrimitives::RunDriveStop()
 		                                   0.0,                 // distance
 		                                   0.0,                 // target x location
 		                                   0.0,                 // target y location
-										   IChassis::HEADING_OPTION::MAINTAIN,
+										   IHolonomicChassis::HEADING_OPTION::MAINTAIN,
 		                                   0.0,                 // heading
 		                                   0.0,                 // start drive speed
 		                                   0.0,					// end drive speed

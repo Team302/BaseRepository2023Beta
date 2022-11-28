@@ -20,7 +20,7 @@
 
 #include <gamepad/button/DigitalButton.h>
 #include <gamepad/IDragonGamePad.h>
-#include <utils/DragonAssert.h>
+#include <utils/Logger.h>
 
 using namespace std;
 
@@ -48,28 +48,31 @@ DigitalButton::DigitalButton
 //==================================================================================
 bool DigitalButton::IsButtonPressed() const 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("DigitalButton::IsButtonPressed gamepad is nullptr")))
+    if (m_gamepad != nullptr)
     {
         return m_gamepad->GetRawButton(m_button);
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("DigitalButton::DigitalButton::IsButtonPressed"), string("Gampad"), string("is Nullptr"));
     return false;
 }
 
 bool DigitalButton::WasButtonReleased() const 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("DigitalButton::WasButtonReleased gamepad is nullptr")))
+    if (m_gamepad != nullptr)
     {
         return m_gamepad->GetRawButtonReleased(m_button);
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("DigitalButton::DigitalButton::WasButtonReleased"), string("Gampad"), string("is Nullptr"));
     return false;
 }
 
 bool DigitalButton::WasButtonPressed() const 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("DigitalButton::WasButtonPressed gamepad is nullptr")))
+    if (m_gamepad != nullptr)
     {
         return  m_gamepad->GetRawButtonPressed(m_button);
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("DigitalButton::WasButtonPressed"), string("Gampad"), string("is Nullptr"));
     return false;
 }
 

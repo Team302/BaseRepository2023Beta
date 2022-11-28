@@ -32,7 +32,7 @@
 #include <gamepad/axis/ScaledDeadbandValue.h>
 #include <gamepad/axis/SquaredProfile.h>
 #include <gamepad/IDragonGamePad.h>
-#include <utils/DragonAssert.h>
+#include <utils/Logger.h>
 
 // Third Party Includes
 #include <units/dimensionless.h>
@@ -71,23 +71,33 @@ AnalogAxis::AnalogAxis
 
 double AnalogAxis::GetAxisValue()
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("AnalogAxis::GetAxisValue gamepad is nullptr")))
+    if (m_gamepad != nullptr)
     {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("AnalogAxis"), string("GetAxisValue"), string("arrived"));
         auto value = GetRawValue();
         value = m_deadband->ApplyDeadband(value);
         value = m_profile->ApplyProfile(value);
         value = m_scale->Scale(value);
         value = m_inversion->ApplyInversion(value);
         
-        if (m_secondaryAxis != nullptr)
+        /**
+        if (value != 0.0)
         {
-            auto value2 = m_secondaryAxis->GetAxisValue();
-            auto angle = atan2(value2, value);
-            auto cosAngle = abs(cos(angle));
-            value = cosAngle > 0 ? value / cosAngle : value;
+            if (m_secondaryAxis != nullptr)
+            {
+                auto value2 = m_secondaryAxis->GetAxisValue();
+                if (value2 != 0.0)
+                {
+                    auto angle = atan(value2/value);
+                    auto cosAngle = abs(cos(angle));
+                    value /= cosAngle;
+                }
+            }
         }
+        **/
         return value;
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::GetAxisValue"), string("Gamepad"), string("m_gamepad is Nullptr"));
     return 0.0;
 }
 
@@ -116,9 +126,7 @@ void AnalogAxis::SetDeadBand
             break;
 
         default:
-            DragonAssert::GetDragonAssert()->Assert(type != IDragonGamePad::AXIS_DEADBAND::NONE || 
-                                                    type != IDragonGamePad::AXIS_DEADBAND::APPLY_STANDARD_DEADBAND || 
-                                                    type != IDragonGamePad::AXIS_DEADBAND::APPLY_SCALED_DEADBAND, string("AnalogAxis::SetDeadBand invalid option"));
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::AnalogAxis::SetDeadBand"), string("invalid deadband"), string("true"));
             break;
     }
 
@@ -150,9 +158,7 @@ void AnalogAxis::SetAxisProfile
             break;
 
         default:
-            DragonAssert::GetDragonAssert()->Assert(profile != IDragonGamePad::AXIS_PROFILE::CUBED || 
-                                                    profile != IDragonGamePad::AXIS_PROFILE::SQUARED || 
-                                                    profile != IDragonGamePad::AXIS_PROFILE::LINEAR, string("AnalogAxis::SetAxisProfile invalid profile seting"));
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::SetAxisProfile"), string("invalid profile"), string("true"));
             break;
     }
 }
@@ -167,9 +173,13 @@ void AnalogAxis::SetAxisScaleFactor
     double scale                     /// <I> - scale factor - must be positive number
 )
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_scale != nullptr, string("AnalogAxis::SetAxisScaleFactor scale is nullptr")))
+    if (m_scale != nullptr)
     {
         m_scale->SetScaleFactor(scale);
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::SetAxisScaleFactor"), string("no scale"), string("true"));
     }
 }
 
@@ -179,9 +189,13 @@ void AnalogAxis::SetInverted
     bool    isInverted
 )
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_scale != nullptr, string("AnalogAxis::SetInverted invert is nullptr")))
+    if (m_scale != nullptr)
     {
         m_inversion->SetInverted(isInverted);
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::SetInverted"), string("no scale"), string("true"));
     }
 }
 //==================================================================================
@@ -191,10 +205,15 @@ void AnalogAxis::SetInverted
 //==================================================================================
 double AnalogAxis::GetRawValue()
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("AnalogAxis::GetRawValue gamepad is nullptr")))
+    if (m_gamepad != nullptr)
     {
         return m_gamepad->GetRawAxis(m_axis);
     }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("AnalogAxis::GetRawValue"), string("gamepad is nullptr"), string("true"));
+    }
+
     return 0.0;
 }
 

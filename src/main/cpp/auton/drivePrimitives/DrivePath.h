@@ -21,13 +21,12 @@
 #include <auton/PrimitiveParams.h>
 #include <auton/drivePrimitives/IPrimitive.h>
 #include <chassis/ChassisFactory.h>
-#include <chassis/DragonTargetFinder.h>
 #include <chassis/IChassis.h>
+#include <chassis/IHolonomicChassis.h>
 
 //FRC,WPI Includes
 #include <frc/controller/HolonomicDriveController.h>
 #include <frc/controller/RamseteController.h>
-//#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/Filesystem.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/Timer.h>
@@ -35,8 +34,6 @@
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <wpi/SmallString.h>
 
-
-class SwerveChassis;
 
 namespace frc
 {
@@ -62,6 +59,7 @@ private:
 
 
     std::shared_ptr<IChassis>               m_chassis;
+    std::shared_ptr<IHolonomicChassis>      m_holonomicChassis;
     std::unique_ptr<frc::Timer>             m_timer;
 
     frc::Pose2d                             m_currentChassisPosition;
@@ -79,9 +77,8 @@ private:
     double                                  m_deltaY;
     std::vector<frc::Trajectory::State>     m_trajectoryStates;
     frc::Trajectory::State                  m_desiredState;
-    IChassis::HEADING_OPTION                m_headingOption;
+    IHolonomicChassis::HEADING_OPTION       m_headingOption;
     double                                  m_heading;
-    DragonTargetFinder                      m_targetFinder;
     double                                  m_maxTime;
     std::string                             m_ntName;
 

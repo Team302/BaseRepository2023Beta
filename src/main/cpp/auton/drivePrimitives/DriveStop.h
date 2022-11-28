@@ -70,6 +70,5 @@ class DriveStop : public IPrimitive
 		std::shared_ptr<IChassis> m_chassis;	
 		std::unique_ptr<frc::Timer> m_timer;
 		double						m_heading;
-		IChassis::HEADING_OPTION	m_headingOption;
 };
 

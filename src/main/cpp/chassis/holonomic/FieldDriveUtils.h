@@ -17,71 +17,34 @@
 #pragma once
 
 // C++ Includes
-#include <map>
-#include <memory>
-#include <string>
 
-// FRC includes
+// frc Includes
 
-// Team 302 includes
+// Team 302 Includes
 
-// Third Party Includes
-
-
-
-class MotorControllerUsage
+namespace frc
 {
+    class ChassisSpeeds;
+}
 
+class DragonPigeon;
+
+class FieldDriveUtils
+{
     public:
+        FieldDriveUtils() = delete;
+        ~FieldDriveUtils() = delete;
 
-        /// @enum MOTOR_CONTROLLER_USAGE
-        /// @brief Defines motor usages.  This should be modified for each robot.
-        enum MOTOR_CONTROLLER_USAGE
-        {
-            UNKNOWN_MOTOR_CONTROLLER_USAGE = -1,
-            SWERVE_DRIVE,
-            SWERVE_TURN,
-            DIFFERENTIAL_LEFT_MAIN, 
-            DIFFERENTIAL_LEFT_FOLLOWER, 
-            DIFFERENTIAL_RIGHT_MAIN, 
-            DIFFERENTIAL_RIGHT_FOLLOWER, 
-            INTAKE_SPIN,
-            INTAKE_EXTEND,
-            BALL_TRANSFER_SPIN,
-            BALL_TRANSFER_LIFT,
-            LEFT_INDEXER,
-            RIGHT_INDEXER,
-            LIFT,
-            SHOOTER,
-            SHOOTER2,
-            CLIMBER_LIFT,
-            CLIMBER_ROTATE,
-            MECANUM_LEFT_FRONT,
-            MECANUM_LEFT_BACK,
-            MECANUM_RIGHT_FRONT,
-            MECANUM_RIGHT_BACK,
-            INTAKE,
-            INTAKE_TRANSFER,
-            ARM,
-            MAX_MOTOR_CONTROLLER_USAGES
-        };
-
-        static MotorControllerUsage* GetInstance();
-
-        MOTOR_CONTROLLER_USAGE GetUsage
-        ( 
-            std::string         usageString
+        /// @brief convert chassis speeds specified in Field Oriented values to Robot Values
+        /// @param [in] ChassisSpeeds the desired kinemetics of the chassis in a field oriented frame
+        /// @param [in] DragonPigeon gyro which has the angle the robot is facing
+        /// @returns ChassisSpeeds the converted speeds in the robot frame
+        static frc::ChassisSpeeds ConvertFieldOrientedToRobot
+        (
+            frc::ChassisSpeeds  input,
+            DragonPigeon*       pigeon
         );
 
-
-    private:
-        static MotorControllerUsage*    m_instance;
-        MotorControllerUsage();
-        ~MotorControllerUsage();
-        
-		std::map <std::string, MOTOR_CONTROLLER_USAGE> m_usageMap;
-
 };
-
 
 

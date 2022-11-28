@@ -22,6 +22,7 @@
 #include <units/angular_velocity.h>
 
 #include <chassis/IChassis.h>
+#include <chassis/IHolonomicChassis.h>
 #include <hw/interfaces/IDragonMotorController.h>
 
 namespace frc
@@ -29,10 +30,11 @@ namespace frc
     class MecanumDrive;
     class MecanumDriveKinematics;
     class MecanumDriveOdometry;
+    class Pose2d;
 }
 class DragonPigeon;
 
-class MecanumChassis : public IChassis 
+class MecanumChassis : public IChassis , public IHolonomicChassis
 {
 
     public:
@@ -51,12 +53,12 @@ class MecanumChassis : public IChassis
                             std::string                                     networktablename);
 
         IChassis::CHASSIS_TYPE GetType() const override;
-        void Drive(frc::ChassisSpeeds chassisSpeeds);
+        void Drive(frc::ChassisSpeeds chassisSpeeds) override;
         void Drive
         (
-            frc::ChassisSpeeds            chassisSpeeds,
-            IChassis::CHASSIS_DRIVE_MODE  mode,
-            IChassis::HEADING_OPTION      headingOption
+            frc::ChassisSpeeds                      chassisSpeeds,
+            IHolonomicChassis::CHASSIS_DRIVE_MODE   mode,
+            IHolonomicChassis::HEADING_OPTION       headingOption
         ) override;
         
         inline void Initialize() override {};
@@ -89,8 +91,6 @@ class MecanumChassis : public IChassis
         units::length::inch_t                           m_wheelBase;
         units::length::inch_t                           m_track;
 
-        frc::MecanumDrive*                              m_drive;
-        frc::MecanumDriveKinematics*                    m_kinematics;
         std::string                                     m_ntName;
 
 };

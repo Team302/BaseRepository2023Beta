@@ -284,6 +284,13 @@ void Logger::PutLoggingSelectionsOnDashboard()
     m_levelChooser.AddOption("PRINT", LOGGER_LEVEL::PRINT);
     frc::SmartDashboard::PutData("Logging Levels", &m_levelChooser);
 
+    auto table = nt::NetworkTableInstance::GetDefault().GetTable("ArrivedAt");
+    auto keys = table->GetKeys(0);
+    for (auto key : keys)
+    {
+        table.get()->PutString(key, string("N/A"));
+    }
+
     m_cyclingCounter = 0;
 }
 

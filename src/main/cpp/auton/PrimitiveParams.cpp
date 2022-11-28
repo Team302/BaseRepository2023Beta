@@ -17,6 +17,7 @@
 #include <auton/PrimitiveEnums.h>
 #include <auton/PrimitiveParams.h>
 #include <chassis/IChassis.h>
+#include <chassis/IHolonomicChassis.h>
 // @ADDMECH include for your mechanism state mgr
 
 
@@ -28,7 +29,7 @@ PrimitiveParams::PrimitiveParams
     float                       						distance,
     float                       						xLoc,
     float                       						yLoc,
-	IChassis::HEADING_OPTION		    				headingOpt,
+	IHolonomicChassis::HEADING_OPTION					headingOpt,
     float                       						heading,
     float                       						startDriveSpeed,
     float                       						endDriveSpeed,

@@ -20,6 +20,7 @@
 #include <string>
 
 // Team 302 includes
+#include <mechanisms/base/Mech.h>
 #include <mechanisms/MechanismTypes.h>
 #include <mechanisms/base/StateMgr.h>
 

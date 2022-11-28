@@ -14,6 +14,7 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
+#include <cmath>
 #include <string>
 
 #include <frc/kinematics/ChassisSpeeds.h>
@@ -22,15 +23,22 @@
 #include <frc/drive/MecanumDrive.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Translation2d.h>
 
+#include <units/angle.h>
+
+#include <chassis/holonomic/FieldDriveUtils.h>
 #include <hw/factories/PigeonFactory.h>
 #include <hw/DragonPigeon.h>
+#include <utils/ConversionUtils.h>
+#include <utils/Logger.h>
 
 #include <chassis/mecanum/MecanumChassis.h>
 
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
+#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
 
 using namespace std;
+using namespace frc;
 using namespace ctre::phoenix::motorcontrol::can;
 
 MecanumChassis::MecanumChassis
@@ -55,14 +63,6 @@ MecanumChassis::MecanumChassis
     m_wheelDiameter(wheelDiameter),
     m_wheelBase(wheelBase),
     m_track(trackWidth),
-    m_drive(new frc::MecanumDrive(*(leftFrontMotor.get()->GetSpeedController().get()), 
-                                  *(leftBackMotor.get()->GetSpeedController().get()),
-                                  *(rightFrontMotor.get()->GetSpeedController().get()),
-                                  *(rightBackMotor.get()->GetSpeedController().get()))),
-    m_kinematics(new frc::MecanumDriveKinematics(frc::Translation2d(wheelBase/2.0, trackWidth/2.0), 
-                                                 frc::Translation2d(wheelBase/2.0, -1.0*trackWidth/2.0),
-                                                 frc::Translation2d(-1.0*wheelBase/2.0, 1.0*trackWidth/2.0),
-                                                 frc::Translation2d(-1.0*wheelBase/2.0, -1.0*trackWidth/2.0))),
     m_ntName(networktablename)
 {
 }
@@ -74,36 +74,43 @@ IChassis::CHASSIS_TYPE MecanumChassis::GetType() const
 
 void MecanumChassis::Drive
 (
-    frc::ChassisSpeeds            chassisSpeeds,
-    IChassis::CHASSIS_DRIVE_MODE  mode,
-    IChassis::HEADING_OPTION      headingOption
+    frc::ChassisSpeeds                     chassisSpeeds,
+    IHolonomicChassis::CHASSIS_DRIVE_MODE  mode,
+    IHolonomicChassis::HEADING_OPTION      headingOption
 ) 
 {
-    //auto wheels = m_kinematics->ToWheelSpeeds(chassisSpeeds);
-    //wheels.Desaturate(m_maxSpeed);
 
-    if (m_drive != nullptr)
-    {
-        if (mode == IChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED && m_pigeon != nullptr)
-        {
-            m_drive->DriveCartesian(chassisSpeeds.vx(), chassisSpeeds.vy(), chassisSpeeds.omega(), m_pigeon->GetYaw());
-        }
-        else
-        {
-            m_drive->DriveCartesian(chassisSpeeds.vx(), chassisSpeeds.vy(), chassisSpeeds.omega());
-        }
-    }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("MecanumChassis"), string("Run Vx"), chassisSpeeds.vx.value());
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("MecanumChassis"), string("Run Vy"), chassisSpeeds.vy.value());
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("MecanumChassis"), string("Run Omega"), chassisSpeeds.omega.value());
+
+    auto speeds = mode == IHolonomicChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED ? FieldDriveUtils::ConvertFieldOrientedToRobot(chassisSpeeds, m_pigeon) : chassisSpeeds;
+    auto forward = speeds.vx / m_maxSpeed;
+    auto strafe  = speeds.vy / m_maxSpeed;
+    auto rot     = speeds.omega / m_maxAngSpeed;
+
+    auto saturatedPower = fmax((abs(forward.value()) + abs(strafe.value()) + abs(rot.value())), 1.0);
+
+    auto frontLeftPower  = (forward.value() + strafe.value() + rot.value()) / saturatedPower;
+    auto backLeftPower   = (forward.value() - strafe.value() + rot.value()) / saturatedPower;
+    auto frontRightPower = (forward.value() - strafe.value() - rot.value()) / saturatedPower;
+    auto backRightPower  = (forward.value() + strafe.value() - rot.value()) / saturatedPower;
+
+    m_leftFrontMotor.get()->Set(frontLeftPower);
+    m_leftBackMotor.get()->Set(backLeftPower);
+    m_rightFrontMotor.get()->Set(frontRightPower);
+    m_rightBackMotor.get()->Set(backRightPower);
 }
 
 //Moves the robot
 void MecanumChassis::Drive(frc::ChassisSpeeds chassisSpeeds)
 {
-    Drive(chassisSpeeds, IChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, IChassis::HEADING_OPTION::MAINTAIN);
+    Drive(chassisSpeeds, IHolonomicChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, IHolonomicChassis::HEADING_OPTION::MAINTAIN);
 }
 
 frc::Pose2d MecanumChassis::GetPose() const
 {
-    return frc::Pose2d();
+    return Pose2d();
 }
 
 void MecanumChassis::ResetPose(const frc::Pose2d& pose)
@@ -158,9 +165,8 @@ void MecanumChassis::ZeroEncoder(shared_ptr<IDragonMotorController> controller)
     if (controller.get() != nullptr)
     {
         auto motor = controller.get()->GetSpeedController();
-        auto fx = dynamic_cast<WPI_TalonFX*>(motor.get());
-        auto driveMotorSensors = fx->GetSensorCollection();
-        driveMotorSensors.SetIntegratedSensorPosition(0, 0);
+        auto talon = dynamic_cast<WPI_TalonSRX*>(motor.get());
+        talon->SetSelectedSensorPosition(0,0);
     }
 }
 

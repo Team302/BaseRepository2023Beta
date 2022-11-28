@@ -1,6 +1,5 @@
-
 //====================================================================================================================================================
-// Copyright 2022 Lake Orion Robotics FIRST Team 302 
+// Copyright 2022 Lake Orion Robotics FIRST Team 302
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
@@ -16,52 +15,30 @@
 
 #pragma once
 
-// C++ Includes
-#include <map>
-#include <memory>
-#include <string>
+//C++ Libraries
 
-// FRC includes
+//Team 302 includes
+#include <TeleopControl.h>
+#include <mechanisms/base/IState.h>
 
-// Team 302 includes
+class IChassis;
+class IHolonomicChassis;
 
-
-// Third Party Includes
-
-
-
-class ServoUsage
+class HolonomicDrive : public IState
 {
-
     public:
 
-        /// @enum SERVO_USAGE
-        /// @brief Defines Servo usages.  This should be modified for each robot.
-        enum SERVO_USAGE
-        {
-            UNKNOWN_SERVO_USAGE = -1,
-            RELEASE_SERVO, 
-            RELEASE_SERVO2,
-            FLAG_SERVO,
-            MAX_SERVO_USAGES
-        };
+        HolonomicDrive();
+        ~HolonomicDrive() = default;
 
-
-        static ServoUsage* GetInstance();
-
-        SERVO_USAGE GetUsage
-        ( 
-            const std::string         usageString
-        );
+        void Init() override;
+        void Run() override;
+        void Exit() override;
+        bool AtTarget() const override;
 
     private:
-        static ServoUsage*    m_instance;
-        ServoUsage();
-        ~ServoUsage();
-        
-		std::map <std::string, SERVO_USAGE> m_usageMap;
-
+        inline TeleopControl* GetController() const { return m_controller; }
+        IChassis*                           m_chassis;
+        IHolonomicChassis*                  m_holonomicChassis;
+        TeleopControl*                      m_controller;
 };
-
-
-

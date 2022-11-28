@@ -14,15 +14,6 @@
 /// OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-//========================================================================================================
-/// MechanismFactory.cpp
-//========================================================================================================
-///
-/// File Description:
-///     This controls the creation of mechanisms/subsystems
-///
-//========================================================================================================
-
 // C++ Includes
 #include <map>
 #include <memory>
@@ -35,6 +26,7 @@
 #include <hw/DragonDigitalInput.h>
 #include <hw/DragonServo.h>
 #include <hw/DragonSolenoid.h>
+#include <hw/usages/MotorControllerUsage.h>
 #include <hw/interfaces/IDragonMotorController.h>
 #include <hw/usages/AnalogInputMap.h>
 #include <hw/usages/DigitalInputMap.h>
@@ -46,6 +38,7 @@
 #include <mechanisms/MechanismTypes.h>
 #include <utils/Logger.h>
 // @ADDMECH include for your mechanism 
+#include <mechanisms/example/Example.h>
 
 // Third Party Includes
 #include <ctre/phoenix/sensors/CANCoder.h>
@@ -99,7 +92,12 @@ void MechanismFactory::CreateMechanism
 	// Create the mechanism
 	switch ( type )
 	{
-		
+		case MechanismTypes::MECHANISM_TYPE::EXAMPLE:
+		{
+			auto motor = GetMotorController(motorControllers, MotorControllerUsage::EXAMPLE);
+			m_example = new Example(controlFileName, networkTableName, motor);
+		}
+		break;
 		// @ADDMECH  Add case for Mechanism
 
 
@@ -121,6 +119,10 @@ Mech* MechanismFactory::GetMechanism
 {
 	switch (type)
 	{
+		case MechanismTypes::MECHANISM_TYPE::EXAMPLE:
+			return m_example;
+			break;
+
 		// @ADDMECH  Add case for Mechanism
 
 		default:

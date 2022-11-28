@@ -59,27 +59,19 @@ void DriveStop::Init(PrimitiveParams* params)
 	m_timer->Reset();
 	m_timer->Start();
 	m_heading = params->GetHeading();
-	m_headingOption = params->GetHeadingOption();
 }
 
 /// @brief run the primitive (periodic routine)
 /// @return void
 void DriveStop::Run() 
 {
-	if ( m_chassis != nullptr )
+	if (m_chassis.get() != nullptr)
 	{
 		ChassisSpeeds speeds;
 		speeds.vx = 0_mps;
 		speeds.vy = 0_mps;
 		speeds.omega = units::degrees_per_second_t(0.0);
-		if (m_headingOption == IChassis::HEADING_OPTION::SPECIFIED_ANGLE)
-        {
-            m_chassis->SetTargetHeading(units::angle::degree_t(m_heading));
-        }
-
-		m_chassis->Drive(speeds, 
-						 IChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED,
-						 m_headingOption);
+		m_chassis.get()->Drive(speeds);
 	}
 	else
 	{

@@ -17,70 +17,62 @@
 #pragma once
 
 // C++ Includes
-#include <map>
-#include <memory>
-#include <string>
 
 // FRC includes
+#include <units/angular_velocity.h>
 
 // Team 302 includes
 
 // Third Party Includes
 
 
-
-class MotorControllerUsage
+namespace frc
 {
+    struct ChassisSpeeds;
+}
 
-    public:
 
-        /// @enum MOTOR_CONTROLLER_USAGE
-        /// @brief Defines motor usages.  This should be modified for each robot.
-        enum MOTOR_CONTROLLER_USAGE
+///	 @interface IHolonomicChassis
+///  @brief	    Interface for differential drives
+class IHolonomicChassis
+{
+	public:
+        enum CHASSIS_DRIVE_MODE
         {
-            UNKNOWN_MOTOR_CONTROLLER_USAGE = -1,
-            SWERVE_DRIVE,
-            SWERVE_TURN,
-            DIFFERENTIAL_LEFT_MAIN, 
-            DIFFERENTIAL_LEFT_FOLLOWER, 
-            DIFFERENTIAL_RIGHT_MAIN, 
-            DIFFERENTIAL_RIGHT_FOLLOWER, 
-            INTAKE_SPIN,
-            INTAKE_EXTEND,
-            BALL_TRANSFER_SPIN,
-            BALL_TRANSFER_LIFT,
-            LEFT_INDEXER,
-            RIGHT_INDEXER,
-            LIFT,
-            SHOOTER,
-            SHOOTER2,
-            CLIMBER_LIFT,
-            CLIMBER_ROTATE,
-            MECANUM_LEFT_FRONT,
-            MECANUM_LEFT_BACK,
-            MECANUM_RIGHT_FRONT,
-            MECANUM_RIGHT_BACK,
-            INTAKE,
-            INTAKE_TRANSFER,
-            ARM,
-            MAX_MOTOR_CONTROLLER_USAGES
+            ROBOT_ORIENTED,
+            FIELD_ORIENTED,
+            POLAR_DRIVE
         };
 
-        static MotorControllerUsage* GetInstance();
+        enum HEADING_OPTION
+        {
+            DEFAULT,
+            MAINTAIN,
+            POLAR_HEADING,
+            TOWARD_GOAL,
+            TOWARD_GOAL_DRIVE,
+            TOWARD_GOAL_LAUNCHPAD,
+            SPECIFIED_ANGLE,
+            LEFT_INTAKE_TOWARD_BALL,
+            RIGHT_INTAKE_TOWARD_BALL
+        };
 
-        MOTOR_CONTROLLER_USAGE GetUsage
-        ( 
-            std::string         usageString
-        );
 
-
-    private:
-        static MotorControllerUsage*    m_instance;
-        MotorControllerUsage();
-        ~MotorControllerUsage();
+        /// @brief      Run chassis 
+        /// @returns    void
+        virtual void Drive
+        (
+            frc::ChassisSpeeds  chassisSpeeds,
+            CHASSIS_DRIVE_MODE  mode,
+            HEADING_OPTION      headingOption
+        ) = 0;
         
-		std::map <std::string, MOTOR_CONTROLLER_USAGE> m_usageMap;
 
+        virtual units::angular_velocity::radians_per_second_t GetMaxAngularSpeed() const = 0;
+        virtual void SetTargetHeading(units::angle::degree_t targetYaw) = 0;
+
+	    IHolonomicChassis() = default;
+	    virtual ~IHolonomicChassis() = default;
 };
 
 

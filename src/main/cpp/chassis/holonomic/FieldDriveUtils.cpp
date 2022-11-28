@@ -1,6 +1,6 @@
 
 //====================================================================================================================================================
-// Copyright 2022 Lake Orion Robotics FIRST Team 302 
+// Copyright 2022 Lake Orion Robotics FIRST Team 302
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
@@ -14,46 +14,53 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
-#include <map>
-#include <string>
-
 //========================================================================================================
-///	 @class			MechanismTypes
-///  @brief      	This contains the enum for the mechanism types
+/// UsageValidation.cpp
 //========================================================================================================
-class MechanismTypes
+///
+/// File Description:
+///     This will validate the various usages against the valid values.
+//========================================================================================================
+
+// C++ Includes
+
+
+// FRC Includes
+
+// Team 302 Includes
+#include <chassis/holonomic/FieldDriveUtils.h>
+#include <hw/DragonPigeon.h>
+#include <utils/ConversionUtils.h>
+
+// frc Includes
+#include <frc/kinematics/ChassisSpeeds.h>
+
+// Third Party Includes
+
+using namespace frc;
+
+/// @brief convert chassis speeds specified in Field Oriented values to Robot Values
+/// @param [in] ChassisSpeeds the desired kinemetics of the chassis in a field oriented frame
+/// @param [in] DragonPigeon gyro which has the angle the robot is facing
+/// @returns ChassisSpeeds the converted speeds in the robot frame
+ChassisSpeeds FieldDriveUtils::ConvertFieldOrientedToRobot
+(
+    ChassisSpeeds   input,
+    DragonPigeon*   pigeon
+)
 {
-	public:
+    auto heading = pigeon != nullptr ? pigeon->GetYaw() : 0.0;
+    heading = ConversionUtils::DegreesToRadians(heading);
 
-        //==================================================================================
-        /// enum:           MECHANISM_TYPE
-        /// description:    Indicates the type of mechanism
-        //==================================================================================
-        enum MECHANISM_TYPE
-        {
-            UNKNOWN_MECHANISM = -1,
-            EXAMPLE,
-            // @ADDMECH add your mechanism 
+    ChassisSpeeds output;
+    output.vx = input.vx * cos(heading) - input.vy*sin(heading);
+    output.vy = input.vx * sin(heading) + input.vy*cos(heading);
+    output.omega = input.omega;
 
-            MAX_MECHANISM_TYPES
-        };
-
-        static MechanismTypes* GetInstance();
-
-        MECHANISM_TYPE GetType
-        ( 
-            std::string         typeString
-        );
+    return output;
+}
 
 
-    private:
-        static MechanismTypes*    m_instance;
-        MechanismTypes();
-        ~MechanismTypes();
-        
-		std::map <std::string, MECHANISM_TYPE> m_typeMap;
 
-};
+
 

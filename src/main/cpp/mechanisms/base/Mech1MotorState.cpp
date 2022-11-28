@@ -47,14 +47,19 @@ Mech1MotorState::Mech1MotorState
     m_positionBased( false ),
     m_speedBased( false )
 {
+    auto ntName = string("Mech1MotorState");
     if ( mechanism == nullptr )
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mechanism->GetNetworkTableName(), ("Mech1MotorState::Mech1MotorState"), string("no mechanism"));
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, ntName, ("Mech1MotorState::Mech1MotorState"), string("no mechanism"));
     }    
+    else 
+    {
+        ntName = mechanism->GetNetworkTableName();
+    }
     
     if ( control == nullptr )
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mechanism->GetNetworkTableName(), string("Mech1MotorState::Mech1MotorState"), string("no control data"));
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, ntName, string("Mech1MotorState::Mech1MotorState"), string("no control data"));
     }
     else
     {

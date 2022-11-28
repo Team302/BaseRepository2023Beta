@@ -27,7 +27,7 @@
 #include <gamepad/button/ToggleButton.h>
 #include <gamepad/DragonGamepad.h>
 
-#include <utils/DragonAssert.h>
+#include <utils/Logger.h>
 
 using namespace std;
 using namespace frc;
@@ -138,10 +138,12 @@ bool DragonGamepad::IsButtonPressed
     BUTTON_IDENTIFIER button
 ) const
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_button[button] != nullptr, string("DragonGamepad::IsButtonPressed: button is Nullptr")))
+    if (m_button[button] != nullptr) 
     {
         return m_button[button]->IsButtonPressed();
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("IsButtonPressed"), to_string(button), string("button is Nullptr"));
+
     return false;
 }
 
@@ -151,12 +153,16 @@ void DragonGamepad::SetButtonMode
     BUTTON_MODE mode
 ) 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_button[button] != nullptr, string("DragonGamepad::SetButtonMode: button is Nullptr")))
+    if (m_button[button] != nullptr)
     {
         if ( mode == BUTTON_MODE::TOGGLE)
         {
             auto btn = new ToggleButton( m_button[button] );
             m_button[button] = btn;
+        }
+        else
+        {
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetButtonMode"), to_string(button), string("button is Nullptr"));
         }
         // TODO: should have else to re-create the button or remove the toggle decorator
     }
@@ -168,10 +174,11 @@ bool DragonGamepad::WasButtonPressed
     BUTTON_IDENTIFIER button
 ) const
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_button[button] != nullptr, string("DragonGamepad::WasButtonPressed: button is Nullptr")))
+    if (m_button[button] != nullptr)
     {
 	    return m_button[button]->WasButtonPressed();
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("WasButtonPressed"), to_string(button), string("button is Nullptr"));
     return false;
 }
 
@@ -180,10 +187,11 @@ bool DragonGamepad::WasButtonReleased
     BUTTON_IDENTIFIER button
 ) const
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_button[button] != nullptr, string("DragonGamepad::WasButtonReleased: button is Nullptr")))
+    if (m_button[button] != nullptr)
     {
         return m_button[button]->WasButtonReleased();
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("WasButtonPressed"), to_string(button), string("button is Nullptr"));
     return false;
 }
 
@@ -192,7 +200,7 @@ double DragonGamepad::GetAxisValue
     AXIS_IDENTIFIER axis
 ) const
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_axis[axis] != nullptr, string("DragonGamepad::GetAxisValue: Axis is Nullptr")))
+    if (m_axis[axis] != nullptr)
     {
         auto value = m_axis[axis]->GetAxisValue();
         if ( axis == AXIS_IDENTIFIER::GAMEPAD_AXIS_16 || axis == AXIS_IDENTIFIER::GAMEPAD_AXIS_17 )
@@ -201,6 +209,7 @@ double DragonGamepad::GetAxisValue
         }
         return value;
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("GetAxisValue"), to_string(axis), string("axis is Nullptr"));
     return 0.0;
 }
 
@@ -210,9 +219,13 @@ void DragonGamepad::SetAxisDeadband
     AXIS_DEADBAND type
 )
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_axis[axis] != nullptr, string("DragonGamepad::SetAxisDeadband: Axis is Nullptr")))
+    if (m_axis[axis] != nullptr)
     {
         m_axis[axis]->SetDeadBand( type );
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetAxisDeadband"), to_string(axis), string("axis is Nullptr"));
     }
 }
 
@@ -222,9 +235,13 @@ void DragonGamepad::SetAxisProfile
     AXIS_PROFILE curve
 )
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_axis[axis] != nullptr, string("DragonGamepad::SetAxisProfile: Axis is Nullptr")))
+    if (m_axis[axis] != nullptr)
     {
         m_axis[axis]->SetAxisProfile( curve );
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetAxisProfile"), to_string(axis), string("axis is Nullptr"));
     }
 }
 
@@ -234,9 +251,13 @@ void DragonGamepad::SetAxisScale
     double scaleFactor
 )
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_axis[axis] != nullptr, string("DragonGamepad::SetAxisScale: Axis is Nullptr")))
+    if (m_axis[axis] != nullptr)
     {
         m_axis[axis]->SetAxisScaleFactor( scaleFactor );
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetAxisScale"), to_string(axis), string("axis is Nullptr"));
     }
 }
 
@@ -248,10 +269,14 @@ void DragonGamepad::SetAxisFlipped
     bool            isInverted      /// <I> - deadband option
 ) 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_axis[axis] != nullptr, string("DragonGamepad::SetAxisFlipped: Axis is Nullptr")))
+    if (m_axis[axis] != nullptr)
     {
         m_axis[axis]->SetInverted(isInverted);
     }        
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetAxisFlipped"), to_string(axis), string("axis is Nullptr"));
+    }
 }
 
 
@@ -261,12 +286,16 @@ void DragonGamepad::SetRumble
     bool                                rightRumble     // <I> - rumble right
 ) const 
 {
-    if (DragonAssert::GetDragonAssert()->Always(m_gamepad != nullptr, string("DragonGamepad::SetRumble: gamepad is Nullptr")))
+    if (m_gamepad != nullptr)
     {
         double lrum = leftRumble ? 1.0 : 0.0;
         double rrum = rightRumble ? 1.0 : 0.0;
 
         m_gamepad->SetRumble(GenericHID::RumbleType::kLeftRumble, lrum);
         m_gamepad->SetRumble(GenericHID::RumbleType::kRightRumble, rrum);
+    }
+    else
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT_ONCE, string("SetRumble"), "Game Pad", string("Nullptr"));
     }
 }
