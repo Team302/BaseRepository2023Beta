@@ -32,7 +32,7 @@ class DragonCanCoder : public ctre::phoenix::sensors::WPI_CANCoder
             bool                        reverse
 		);
 		virtual ~DragonCanCoder() = default;
-        std::string GetUsage() const {return m_usage;};
+        std::string GetUsage() const {return m_usage;}
 
 	private:
 		std::string						m_networkTableName;

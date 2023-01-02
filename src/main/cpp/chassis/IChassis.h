@@ -50,6 +50,25 @@ class IChassis
             MECANUM,
             SWERVE
         };
+        enum CHASSIS_DRIVE_MODE
+        {
+            ROBOT_ORIENTED,
+            FIELD_ORIENTED,
+            POLAR_DRIVE
+        };
+
+        enum HEADING_OPTION
+        {
+            DEFAULT,
+            MAINTAIN,
+            POLAR_HEADING,
+            TOWARD_GOAL,
+            TOWARD_GOAL_DRIVE,
+            TOWARD_GOAL_LAUNCHPAD,
+            SPECIFIED_ANGLE,
+            LEFT_INTAKE_TOWARD_BALL,
+            RIGHT_INTAKE_TOWARD_BALL
+        };
 
         /// @brief      return the chassis type
         /// @returns    CHASSIS_TYPE
@@ -61,6 +80,18 @@ class IChassis
         (
             frc::ChassisSpeeds  chassisSpeeds
         ) = 0;
+
+        /// @brief      Run chassis 
+        /// @returns    void
+        virtual void Drive
+        (
+            frc::ChassisSpeeds  chassisSpeeds,
+            CHASSIS_DRIVE_MODE  mode,
+            HEADING_OPTION      headingOption
+        ) = 0;
+        
+
+        virtual void SetTargetHeading(units::angle::degree_t targetYaw) = 0;
         
         virtual void Initialize() = 0;
 

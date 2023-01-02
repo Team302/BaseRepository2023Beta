@@ -16,6 +16,7 @@
 // C++ Includes
 #include <algorithm>
 #include <memory>
+#include <string>
 
 // FRC includes
 #include <units/velocity.h>
@@ -25,11 +26,10 @@
 // Team 302 Includes
 #include <chassis/holonomic/HolonomicDrive.h>
 #include <chassis/IChassis.h>
-#include <chassis/IHolonomicChassis.h>
 #include <hw/DragonPigeon.h>
 #include <gamepad/IDragonGamePad.h>
 #include <TeleopControl.h>
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <chassis/ChassisFactory.h>
 #include <hw/factories/PigeonFactory.h>
 #include <utils/Logger.h>
@@ -38,19 +38,13 @@ using namespace std;
 using namespace frc;
 
 /// @brief initialize the object and validate the necessary items are not nullptrs
-HolonomicDrive::HolonomicDrive() : IState(),
-                                 m_chassis(ChassisFactory::GetChassisFactory()->GetMecanumChassis()),
-                                 m_holonomicChassis(ChassisFactory::GetChassisFactory()->GetHolonomicChassis()),
-                                 m_controller(TeleopControl::GetInstance())
+HolonomicDrive::HolonomicDrive() : State(string("HolonomicDrive"), -1),
+                                   m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()),
+                                   m_controller(TeleopControl::GetInstance())
 {
     if (m_controller == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("HolonomicDrive"), string("Constructor"), string("TeleopControl is nullptr"));
-    }
-
-    if (m_holonomicChassis == nullptr)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("HolonomicDrive"), string("Constructor"), string("Chassis is nullptr"));
     }
 }
 
@@ -81,43 +75,52 @@ void HolonomicDrive::Init()
 /// @return void
 void HolonomicDrive::Run()
 {
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run"), string("begin"));
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("HolonomicDrive::Run"), string("begin"));
     auto controller = GetController();
-    if (controller != nullptr && m_holonomicChassis != nullptr && m_chassis != nullptr)
+    if (controller != nullptr && m_chassis != nullptr)
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run"), string("not nullptr"));
+        IChassis::CHASSIS_DRIVE_MODE mode = IChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED;
+        IChassis::HEADING_OPTION headingOpt = IChassis::HEADING_OPTION::MAINTAIN;
+        if (controller->IsButtonPressed(TeleopControl::FINDTARGET))
+        {
+            headingOpt = IChassis::HEADING_OPTION::TOWARD_GOAL;
+        }                                       
+        else if (controller->IsButtonPressed(TeleopControl::DRIVE_TO_SHOOTING_SPOT))
+        {
+            headingOpt = IChassis::HEADING_OPTION::TOWARD_GOAL_DRIVE;
+        }
+        
+        if (controller->IsButtonPressed(TeleopControl::FUNCTION_IDENTIFIER::REZERO_PIGEON))
+        {
+            auto factory = PigeonFactory::GetFactory();
+            auto m_pigeon = factory->GetPigeon(DragonPigeon::PIGEON_USAGE::CENTER_OF_ROBOT);
+            m_pigeon->ReZeroPigeon(0.0, 0.0);
+            //m_chassis->ZeroAlignSwerveModules();
+            //m_chassis->ReZero();
+        }
 
-        IHolonomicChassis::CHASSIS_DRIVE_MODE mode = IHolonomicChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED;
-        IHolonomicChassis::HEADING_OPTION headingOpt = IHolonomicChassis::HEADING_OPTION::MAINTAIN;
+        //if (controller->IsButtonPressed(TeleopControl::FUNCTION_IDENTIFIER::HOLD_POSITION))
+        //{
+            //m_chassis.get()->DriveHoldPosition();
+        //}
 
         auto maxSpeed = m_chassis->GetMaxSpeed();
-        auto maxAngSpeed = m_holonomicChassis->GetMaxAngularSpeed();
+        auto maxAngSpeed = m_chassis->GetMaxAngularSpeed();
 
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("about to read joysticks"), string("xxx"));
         auto forward = controller->GetAxisValue(TeleopControl::FUNCTION_IDENTIFIER::HOLONOMIC_DRIVE_FORWARD);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("forward"), forward);
         auto strafe = controller->GetAxisValue(TeleopControl::FUNCTION_IDENTIFIER::HOLONOMIC_DRIVE_STRAFE);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("strafe"), strafe);
         auto rotate = controller->GetAxisValue(TeleopControl::FUNCTION_IDENTIFIER::HOLONOMIC_DRIVE_ROTATE);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("rotate"), rotate);
 
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run"), string("axis read"));
 
         ChassisSpeeds speeds{forward*maxSpeed, strafe*maxSpeed, rotate*maxAngSpeed};
-        //speeds.vx = forward * maxSpeed;
-        //speeds.vy =  strafe * maxSpeed;
-        //speeds.omega = rotate * maxAngSpeed;
-        
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run Vx"), speeds.vx.value());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run Vy"), speeds.vy.value());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run Omega"), speeds.omega.value());
-
-        m_holonomicChassis->Drive(speeds, mode, headingOpt);
+        m_chassis->Drive(speeds, mode, headingOpt);
     }
     else
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run"), string("nullptr"));
     }
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("HolonomicDrive::Run"), string("end"));   
 }
 
 void HolonomicDrive::Exit()

@@ -77,7 +77,7 @@ bool Mech1Solenoid::IsSolenoidActivated() const
 
 
 /// @brief log data to the network table if it is activated and time period has past
-void Mech1Solenoid::LogHardwareInformation()
+void Mech1Solenoid::LogInformation() const
 {
 }
 

@@ -15,18 +15,21 @@
 //====================================================================================================================================================
 
 #pragma once
+#include <string>
 
 #include <mechanisms/base/Mech1IndMotor.h>
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/controllers/ControlData.h>
 
-class Mech1MotorState : public IState
+class Mech1MotorState : public State
 {
     public:
 
         Mech1MotorState
         (
             Mech1IndMotor*                  mechanism,
+            std::string                     stateName,
+            int                             stateId,
             ControlData*                    control,
             double                          target
         );
@@ -37,6 +40,8 @@ class Mech1MotorState : public IState
         void Run() override;
         void Exit() override;
         bool AtTarget() const override;
+
+        void LogInformation() const override;
 
         double GetTarget() const {return m_target;}
         double GetRPS() const {return m_mechanism->GetSpeed();}

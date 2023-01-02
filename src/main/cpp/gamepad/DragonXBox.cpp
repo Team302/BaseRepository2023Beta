@@ -41,30 +41,30 @@ DragonXBox::DragonXBox
 ) : m_xbox(new frc::XboxController(port))
 {
     // Create Axis Objects
-    m_axis[LEFT_JOYSTICK_X] = new AnalogAxis(m_xbox, 0, false);
-    m_axis[LEFT_JOYSTICK_Y]  = new AnalogAxis(m_xbox, 1, true);
+    m_axis[LEFT_JOYSTICK_X] = new AnalogAxis(m_xbox, XboxController::Axis::kLeftX, false);
+    m_axis[LEFT_JOYSTICK_Y]  = new AnalogAxis(m_xbox, XboxController::Axis::kLeftY, true);
     m_axis[LEFT_JOYSTICK_X]->DefinePerpendicularAxis(m_axis[LEFT_JOYSTICK_Y]);
     m_axis[LEFT_JOYSTICK_Y]->DefinePerpendicularAxis(m_axis[LEFT_JOYSTICK_X]);
     
-    m_axis[LEFT_TRIGGER]     = new AnalogAxis(m_xbox, 2, false);
-    m_axis[RIGHT_TRIGGER]    = new AnalogAxis(m_xbox, 3, false);
+    m_axis[LEFT_TRIGGER]     = new AnalogAxis(m_xbox, XboxController::Axis::kLeftTrigger, false);
+    m_axis[RIGHT_TRIGGER]    = new AnalogAxis(m_xbox, XboxController::Axis::kRightTrigger, false);
 
-    m_axis[RIGHT_JOYSTICK_X] = new AnalogAxis(m_xbox, 4, false);
-    m_axis[RIGHT_JOYSTICK_Y] = new AnalogAxis(m_xbox, 5, true);
+    m_axis[RIGHT_JOYSTICK_X] = new AnalogAxis(m_xbox, XboxController::Axis::kRightX, false);
+    m_axis[RIGHT_JOYSTICK_Y] = new AnalogAxis(m_xbox, XboxController::Axis::kRightY, true);
     m_axis[RIGHT_JOYSTICK_X]->DefinePerpendicularAxis(m_axis[RIGHT_JOYSTICK_Y]);
     m_axis[RIGHT_JOYSTICK_Y]->DefinePerpendicularAxis(m_axis[RIGHT_JOYSTICK_X]);
 
     // Create DigitalButton Objects for the physical buttons
-    m_button[A_BUTTON]            = new DigitalButton(m_xbox, 1);
-    m_button[B_BUTTON]            = new DigitalButton(m_xbox, 2);
-    m_button[X_BUTTON]            = new DigitalButton(m_xbox, 3);
-    m_button[Y_BUTTON]            = new DigitalButton(m_xbox, 4);
-    m_button[LEFT_BUMPER]         = new DigitalButton(m_xbox, 5);
-    m_button[RIGHT_BUMPER]        = new DigitalButton(m_xbox, 6);
-    m_button[SELECT_BUTTON]       = new DigitalButton(m_xbox, 7);
-    m_button[START_BUTTON]        = new DigitalButton(m_xbox, 8);
-    m_button[LEFT_STICK_PRESSED]  = new DigitalButton(m_xbox, 9);
-    m_button[RIGHT_STICK_PRESSED] = new DigitalButton(m_xbox, 10);
+    m_button[A_BUTTON]            = new DigitalButton(m_xbox, XboxController::Button::kA);
+    m_button[B_BUTTON]            = new DigitalButton(m_xbox, XboxController::Button::kB);
+    m_button[X_BUTTON]            = new DigitalButton(m_xbox, XboxController::Button::kX);
+    m_button[Y_BUTTON]            = new DigitalButton(m_xbox, XboxController::Button::kY);
+    m_button[LEFT_BUMPER]         = new DigitalButton(m_xbox, XboxController::Button::kLeftBumper);
+    m_button[RIGHT_BUMPER]        = new DigitalButton(m_xbox, XboxController::Button::kRightBumper);
+    m_button[SELECT_BUTTON]       = new DigitalButton(m_xbox, XboxController::Button::kBack);
+    m_button[START_BUTTON]        = new DigitalButton(m_xbox, XboxController::Button::kStart);
+    m_button[LEFT_STICK_PRESSED]  = new DigitalButton(m_xbox, XboxController::Button::kLeftStick);
+    m_button[RIGHT_STICK_PRESSED] = new DigitalButton(m_xbox, XboxController::Button::kRightStick);
     
     // Create AnalogButton Objects for the triggers
     m_button[LEFT_TRIGGER_PRESSED] = new AnalogButton(m_axis[LEFT_TRIGGER]);
@@ -195,7 +195,6 @@ double DragonXBox::GetAxisValue
     AXIS_IDENTIFIER    axis// <I> - axis identifier to read
 ) const
 {
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DragonXBox::GetAxisValue"), string("top of Xbox GetAxisValue"), string("xxx"));
     if (m_axis[axis] != nullptr)
     {
         return m_axis[axis]->GetAxisValue();

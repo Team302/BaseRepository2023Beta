@@ -75,7 +75,7 @@ double Mech1Servo::GetAngle() const
 
 
 /// @brief log data to the network table if it is activated and time period has past
-void Mech1Servo::LogHardwareInformation()
+void Mech1Servo::LogInformation() const
 {
 }
 

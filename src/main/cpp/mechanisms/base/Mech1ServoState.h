@@ -16,17 +16,21 @@
 
 #pragma once
 
-#include <mechanisms/base/IState.h>
+#include <string>
+
+#include <State.h>
 
 class Mech1Servo;
 
-class Mech1ServoState : public IState
+class Mech1ServoState : public State
 {
     public:
 
         Mech1ServoState
         (
             Mech1Servo*                     mechanism,
+            std::string                     stateName,
+            int                             stateId,
             double                          target
         );
         Mech1ServoState() = delete;
@@ -36,6 +40,8 @@ class Mech1ServoState : public IState
         void Run() override;
         void Exit() override;
         bool AtTarget() const override;
+
+        void LogInformation() const override;
 
         double GetTarget() const {return m_target;}
 

@@ -15,18 +15,21 @@
 //====================================================================================================================================================
 
 #pragma once
+#include <string>
 
-#include <mechanisms/base/IState.h>
+#include <State.h>
 
 class Mech2Servos;
 
-class Mech2ServosState : public IState
+class Mech2ServosState : public State
 {
     public:
 
         Mech2ServosState
         (
             Mech2Servos*                    mechanism,
+            std::string                     stateName,
+            int                             stateId,
             double                          target,
             double                          target2
         );
@@ -38,6 +41,8 @@ class Mech2ServosState : public IState
         void Exit() override;
         bool AtTarget() const override;
 
+        void LogInformation() const override;
+        
         double GetTarget() const {return m_target;}
         double GetTarget2() const {return m_target2;}
 

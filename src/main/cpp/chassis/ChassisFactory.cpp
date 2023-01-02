@@ -98,15 +98,15 @@ IChassis* ChassisFactory::CreateChassis
         {
             auto leftMotor = GetMotorController(motors, MotorControllerUsage::MOTOR_CONTROLLER_USAGE::DIFFERENTIAL_LEFT_MAIN);
             auto rightMotor = GetMotorController(motors, MotorControllerUsage::MOTOR_CONTROLLER_USAGE::DIFFERENTIAL_RIGHT_MAIN);
-            m_chassis = new DifferentialChassis(leftMotor,
-                                                rightMotor,
-                                                track,
-                                                maxVelocity,
-                                                maxAngularSpeed,
-                                                wheelDiameter,
-                                                networkTableName,
-                                                controlFileName);
-
+            m_differential = new DifferentialChassis(leftMotor,
+                                                     rightMotor,
+                                                     track,
+                                                     maxVelocity,
+                                                     maxAngularSpeed,
+                                                     wheelDiameter,
+                                                     networkTableName,
+                                                     controlFileName);
+            m_chassis = m_differential;
         }
         break;
 
@@ -118,22 +118,23 @@ IChassis* ChassisFactory::CreateChassis
 
         case ChassisFactory::CHASSIS_TYPE::SWERVE_CHASSIS:
         {
-            m_chassis = new SwerveChassis( frontLeft, 
-                                           frontRight, 
-                                           backLeft, 
-                                           backRight, 
-                                           wheelDiameter,
-                                           wheelBase, 
-                                           track, 
-                                           odometryComplianceCoefficient,
-                                           maxVelocity, 
-                                           maxAngularSpeed, 
-                                           maxAcceleration,
-                                           maxAngularAcceleration
-                                           //poseEstOption, 
-                                           //networkTableName,
-                                           //controlFileName
-                                           );
+            m_swerve = new SwerveChassis( frontLeft, 
+                                          frontRight, 
+                                          backLeft, 
+                                          backRight, 
+                                          wheelDiameter,
+                                          wheelBase, 
+                                          track, 
+                                          odometryComplianceCoefficient,
+                                          maxVelocity, 
+                                          maxAngularSpeed, 
+                                          maxAcceleration,
+                                          maxAngularAcceleration
+                                          //poseEstOption, 
+                                          //networkTableName,
+                                          //controlFileName
+                                          );
+            m_chassis = m_mecanum;
         }
         break;
 

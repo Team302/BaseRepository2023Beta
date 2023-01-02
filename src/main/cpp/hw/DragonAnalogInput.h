@@ -47,7 +47,7 @@ class DragonAnalogInput : frc::AnalogInput
 		);
 		virtual ~DragonAnalogInput();
 		float GetInterpolatedValue() const;
-        ANALOG_SENSOR_TYPE GetType() const {return m_type;};
+        ANALOG_SENSOR_TYPE GetType() const {return m_type;}
 
 	private:
 		std::string						m_networkTableName;

@@ -16,11 +16,12 @@
 
 // C++ Includes
 #include <memory>
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/base/Mech1ServoState.h>
 #include <mechanisms/base/Mech1Servo.h>
 #include <utils/Logger.h>
@@ -34,8 +35,10 @@ using namespace std;
 Mech1ServoState::Mech1ServoState
 (
     Mech1Servo*                     mechanism,
+    std::string                     stateName,
+    int                             stateId,
     double                          target
-) : IState(),
+) : State(stateName, stateId),
     m_mechanism( mechanism ),
     m_target( target )
 {
@@ -55,8 +58,6 @@ void Mech1ServoState::Run()
     if (m_mechanism != nullptr)
     {
         m_mechanism->SetAngle(m_target);
-        auto ntName = m_mechanism->GetNetworkTableName();
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("Target"), GetTarget());
     }
 }
 
@@ -69,3 +70,13 @@ bool Mech1ServoState::AtTarget() const
     return true;
 }
 
+void Mech1ServoState::LogInformation() const
+{
+    if (m_mechanism != nullptr)
+    {
+        auto ntName = m_mechanism->GetNetworkTableName();
+        auto id = GetStateName();
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("state name"), id);
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("Target"), GetTarget());
+    }
+}

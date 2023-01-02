@@ -82,7 +82,7 @@ void Mech2IndMotors::Update()
         m_secondary.get()->Set(m_secondaryTarget);
     }
 
-    LogHardwareInformation();
+    LogInformation();
 }
 
 void Mech2IndMotors::UpdateTargets
@@ -154,7 +154,7 @@ void Mech2IndMotors::SetSecondaryControlConstants
 
 
 /// @brief log data to the network table if it is activated and time period has past
-void Mech2IndMotors::LogHardwareInformation()
+void Mech2IndMotors::LogInformation() const
 {
     auto ntName = GetNetworkTableName();
 

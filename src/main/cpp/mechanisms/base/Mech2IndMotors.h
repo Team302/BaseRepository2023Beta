@@ -43,14 +43,14 @@ class Mech2IndMotors : public Mech
             MechanismTypes::MECHANISM_TYPE              type,
             std::string                                 controlFileName,
             std::string                                 networkTableName,
-            std::shared_ptr<IDragonMotorController>     spinMotor,
-            std::shared_ptr<IDragonMotorController>     liftMotor
+            std::shared_ptr<IDragonMotorController>     primaryMotor,
+            std::shared_ptr<IDragonMotorController>     secondaryMotor
         );
 	    Mech2IndMotors() = delete;
 	    ~Mech2IndMotors() = default;
 
         /// @brief log data to the network table if it is activated and time period has past
-        void LogHardwareInformation() override;
+        void LogInformation() const override;
 
         /// @brief update the output to the mechanism using the current controller and target value(s)
         /// @return void 
@@ -95,8 +95,8 @@ class Mech2IndMotors : public Mech
         double GetPrimaryTarget() const { return m_primaryTarget; }
         double GetSecondaryTarget() const { return m_secondaryTarget; }
 
-        inline std::shared_ptr<IDragonMotorController> GetPrimaryMotor() const {return m_primary;};
-        inline std::shared_ptr<IDragonMotorController> GetSecondaryMotor() const {return m_secondary;};
+        inline std::shared_ptr<IDragonMotorController> GetPrimaryMotor() const {return m_primary;}
+        inline std::shared_ptr<IDragonMotorController> GetSecondaryMotor() const {return m_secondary;}
 
     private: 
         std::shared_ptr<IDragonMotorController>     m_primary;

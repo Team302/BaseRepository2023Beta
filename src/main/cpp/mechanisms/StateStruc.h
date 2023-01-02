@@ -15,11 +15,12 @@
 //====================================================================================================================================================
 
 #pragma once
+#include <string>
        
 enum StateType
 {
     // @ADDMECH Add your states
-
+    EXAMPLE_STATE,
     MAX_STATE_TYPES
 };
 
@@ -27,6 +28,7 @@ enum StateType
 struct StateStruc
 {
     int         id;
+    std::string xmlIdentifier;
     StateType   type;
     bool        isDefault;
 };

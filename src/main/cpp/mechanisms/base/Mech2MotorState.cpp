@@ -16,11 +16,12 @@
 
 // C++ Includes
 #include <memory>
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/base/Mech2MotorState.h>
 #include <mechanisms/controllers/ControlData.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
@@ -38,11 +39,13 @@ using namespace std;
 Mech2MotorState::Mech2MotorState
 (
     Mech2IndMotors*                 mechanism,
+    string                          stateName,
+    int                             stateId,
     ControlData*                    control,
     ControlData*                    control2,
     double                          primaryTarget,
     double                          secondaryTarget
-) : IState(),
+) : State(stateName, stateId),
     m_mechanism( mechanism ),
     m_control( control ),
     m_control2( control2 ),
@@ -144,11 +147,7 @@ void Mech2MotorState::Run()
 {
     if ( m_mechanism != nullptr )
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mechanism->GetNetworkTableName(), string("target1"), m_primaryTarget);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mechanism->GetNetworkTableName(), string("target2"), m_secondaryTarget);
-        
         m_mechanism->Update();
-        m_mechanism->LogHardwareInformation();
     }
 }
 
@@ -190,4 +189,18 @@ double Mech2MotorState::GetPrimaryRPS() const
 double Mech2MotorState::GetSecondaryRPS() const
 {
     return m_mechanism->GetSecondarySpeed();
+}
+
+
+void Mech2MotorState::LogInformation() const
+{
+    if ( m_mechanism != nullptr )
+    {
+        auto ntName = m_mechanism->GetNetworkTableName();
+        auto id = GetStateName();
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("state name"), id);
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("target1"), m_primaryTarget);
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("target2"), m_secondaryTarget);
+    }
+
 }

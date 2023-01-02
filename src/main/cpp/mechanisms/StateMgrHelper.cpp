@@ -15,7 +15,8 @@
 //====================================================================================================================================================
 #include <string>
 
-#include <mechanisms/base/IState.h>
+#include <auton/PrimitiveParams.h>
+#include <State.h>
 #include <mechanisms/base/Mech.h>
 #include <mechanisms/base/StateMgr.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
@@ -23,13 +24,21 @@
 #include <mechanisms/MechanismTypes.h>
 #include <mechanisms/StateMgrHelper.h>
 #include <mechanisms/StateStruc.h>
+#include <mechanisms/example/ExampleState.h>
+#include <mechanisms/example/ExampleStateMgr.h>
 #include <utils/Logger.h>
 
 using namespace std;
 
+void StateMgrHelper::InitStateMgrs()
+{
+    //ExampleStateMgr::GetInstance();
+    //@ADDMech Add mechanisms here
+}
+
 void StateMgrHelper::RunCurrentMechanismStates() 
 {
-    for (auto i=MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM+1; i<MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
+    for (auto i=MechanismTypes::MECHANISM_TYPE::EXAMPLE+1; i<MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
     {
         auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
         auto stateMgr = mech != nullptr ? mech->GetStateMgr() : nullptr;
@@ -40,7 +49,47 @@ void StateMgrHelper::RunCurrentMechanismStates()
     }   
 }
 
-IState* StateMgrHelper::CreateState
+void StateMgrHelper::SetMechanismStateFromParam
+(
+    PrimitiveParams*        params
+) 
+{
+
+    if (params != nullptr)
+    {
+        for (auto i=MechanismTypes::MECHANISM_TYPE::EXAMPLE+1; i<MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
+        {
+            auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
+            auto stateMgr = mech != nullptr ? mech->GetStateMgr() : nullptr;
+            if (stateMgr != nullptr)
+            {
+                auto stateID = stateMgr->GetCurrentStateParam(params);
+                if (stateID > -1)
+                {
+                    stateMgr->SetCurrentState(stateID, true);
+                }
+            }
+        }   
+    }
+}
+
+void StateMgrHelper::SetCheckGamepadInputsForStateTransitions
+(
+    bool  check
+)
+{
+    for (auto i=MechanismTypes::MECHANISM_TYPE::EXAMPLE+1; i<MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
+    {
+        auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
+        auto stateMgr = mech != nullptr ? mech->GetStateMgr() : nullptr;
+        if (stateMgr != nullptr)
+        {
+            stateMgr->SetAreGamepadTransitionsChecked(check);
+        }
+    }   
+}
+
+State* StateMgrHelper::CreateState
 (
     Mech*                       mech,
     StateStruc&                 stateInfo,
@@ -55,10 +104,19 @@ IState* StateMgrHelper::CreateState
     auto function1Coeff = targetData->GetFunction1Coeff();
     auto function2Coeff = targetData->GetFunction2Coeff();
     auto type = stateInfo.type;
-    IState* thisState = nullptr;
+    auto xmlString = stateInfo.xmlIdentifier;
+    auto id = stateInfo.id;
+
+    State* thisState = nullptr;
     switch (type)
     {
         // @ADDMECH Add case(s) tto create your state(s) 
+        case StateType::EXAMPLE_STATE:
+            thisState = new ExampleState(xmlString, id, controlData, target);
+            break;
+
+
+        // @ADDMECH Add case(s) to create your state(s) 
         //case StateType::SHOOTER:
         //    thisState = new ShooterState(controlData, 
         //                                    controlData2, 

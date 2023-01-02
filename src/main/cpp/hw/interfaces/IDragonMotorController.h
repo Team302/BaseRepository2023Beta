@@ -124,12 +124,13 @@ class IDragonMotorController
             int                                             canID,
             ctre::phoenix::motorcontrol::RemoteSensorSource deviceType
         ) = 0;
+        /**
         virtual void UpdateFramePeriods
         (
 	        ctre::phoenix::motorcontrol::StatusFrameEnhanced	frame,
             uint8_t			                                    milliseconds
         ) = 0;
-
+        **/
         
         virtual void SetFramePeriodPriority
         (

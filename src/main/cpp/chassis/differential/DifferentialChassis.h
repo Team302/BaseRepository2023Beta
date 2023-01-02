@@ -30,9 +30,6 @@
 class DifferentialChassis : public IChassis {
 
     public:
-        DifferentialChassis() = delete;
-        virtual ~DifferentialChassis() = default;
-
         DifferentialChassis(std::shared_ptr<IDragonMotorController>         leftMotor, 
                             std::shared_ptr<IDragonMotorController>         rightMotor,
                             units::meter_t                                  trackWidth,
@@ -41,13 +38,23 @@ class DifferentialChassis : public IChassis {
                             units::length::inch_t                           wheelDiameter,
                             std::string                                     networktablename,
                             std::string                                     controlfilename);
+        DifferentialChassis() = delete;
+        virtual ~DifferentialChassis() = default;
+
 
         IChassis::CHASSIS_TYPE GetType() const override;
         void Drive
         (
             frc::ChassisSpeeds            chassisSpeeds
         ) override;
-        
+        void Drive
+        (
+            frc::ChassisSpeeds              chassisSpeeds,
+            IChassis::CHASSIS_DRIVE_MODE    mode,
+            IChassis::HEADING_OPTION        headingOption
+        ) override;
+        void SetTargetHeading(units::angle::degree_t targetYaw) override;
+
         inline void Initialize() override {};
         frc::Pose2d GetPose() const override;
         void ResetPose
@@ -76,7 +83,7 @@ class DifferentialChassis : public IChassis {
         units::length::inch_t                           m_track;
 
         frc::DifferentialDriveKinematics*               m_kinematics;
-        frc::DifferentialDriveOdometry*                 m_differentialOdometry;
+        //frc::DifferentialDriveOdometry*                 m_differentialOdometry;
         std::string                                     m_controlFile;
         std::string                                     m_ntName;
 

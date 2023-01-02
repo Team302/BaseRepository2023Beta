@@ -15,20 +15,23 @@
 //====================================================================================================================================================
 
 #pragma once
+#include <string>
 
-#include <mechanisms/base/IState.h>
+#include <State.h>
 
 // forward declare
 class ControlData;
 class Mech2IndMotors;
 
-class Mech2MotorState : public IState
+class Mech2MotorState : public State
 {
     public:
 
         Mech2MotorState
         (
             Mech2IndMotors*                 mechanism,
+            std::string                     stateName,
+            int                             stateId,
             ControlData*                    control,
             ControlData*                    control2,
             double                          primaryTarget,
@@ -41,6 +44,9 @@ class Mech2MotorState : public IState
         void Run() override;
         void Exit() override;
         bool AtTarget() const override;
+
+        void LogInformation() const override;
+
         double GetPrimaryTarget() const {return m_primaryTarget;}
         double GetSecondaryTarget() const {return m_secondaryTarget;}
         double GetPrimaryRPS() const;

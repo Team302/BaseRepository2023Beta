@@ -118,12 +118,14 @@ class DragonTalonSRX : public IDragonMotorController
 
         void SetDiameter( double diameter ) override;
 
+        /**
         void UpdateFramePeriods
         (
 	        ctre::phoenix::motorcontrol::StatusFrameEnhanced	frame,
             uint8_t			                                    milliseconds
         ) override;
-        
+        **/
+       
         void SetFramePeriodPriority
         (
             MOTOR_PRIORITY              priority

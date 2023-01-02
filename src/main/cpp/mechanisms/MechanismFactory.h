@@ -40,6 +40,7 @@
 #include <hw/usages/ServoMap.h>
 #include <mechanisms/MechanismTypes.h>
 #include <mechanisms/base/Mech.h>
+#include <mechanisms/example/Example.h>
 
 // @ADDMECH include for your mechanism 
 
@@ -75,6 +76,8 @@ class MechanismFactory
 			const AnalogInputMap& 								    analogInputs,
 			DragonCanCoder* 										canCoder
 		);
+		
+		inline Example* GetExample() const {return m_example;}
 		
 		// @ADDMECH  Add inline Get method for your mechanism
 
@@ -116,9 +119,11 @@ class MechanismFactory
 		virtual ~MechanismFactory() = default;
 
 		static MechanismFactory*	m_mechanismFactory;
-		
-		// @ADDMECH  Add your mechanism here
 
+		Example*                        m_example;
+		
+		// @ADDMECH  Add your mechanism here		
+         
 
 		
 

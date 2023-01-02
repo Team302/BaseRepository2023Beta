@@ -24,7 +24,8 @@
 #include <networktables/NetworkTableEntry.h>
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <auton/PrimitiveParams.h>
+#include <State.h>
 #include <mechanisms/base/Mech.h>
 #include <mechanisms/base/StateMgr.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
@@ -38,13 +39,12 @@
 
 using namespace std;
 
-
-
 /// @brief    initialize the state manager, parse the configuration file and create the states.
 StateMgr::StateMgr() : m_mech(nullptr),
                        m_currentState(),
                        m_stateVector(),
-                       m_currentStateID(0)
+                       m_currentStateID(0),
+                       m_checkGamePadTransitions(true)
 {
 }
 void StateMgr::Init
@@ -54,8 +54,6 @@ void StateMgr::Init
 ) 
 {
     m_mech = mech;
-
-
     if (mech != nullptr)
     {
         // Parse the configuration file 
@@ -69,11 +67,13 @@ void StateMgr::Init
         else
         {
             // initialize the xml string to state map
-            m_stateVector.resize(stateMap.size());
+            m_stateVector.resize(stateMap.size(), nullptr);
             // create the states passing the configuration data
+            auto stateId=0;
             for ( auto td: targetData )
             {
                 auto stateString = td->GetStateString();
+                Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, mech->GetNetworkTableName(), string("State")+to_string(stateId), stateString);
                 auto stateStringToStrucItr = stateMap.find( stateString );
                 if ( stateStringToStrucItr != stateMap.end() )
                 {
@@ -95,7 +95,8 @@ void StateMgr::Init
             	    }
             	    else
             	    {
-                	    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mech->GetNetworkTableName(), string("StateMgr::StateMgr"), string("multiple mechanism state info for state"));
+                        auto msg = string("multiple mechanism state info for state");
+                	    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mech->GetNetworkTableName(), string("StateMgr::StateMgr"), msg);
             	    }
         	    }
         	    else
@@ -126,6 +127,20 @@ void StateMgr::RunCurrentState()
 
 void StateMgr::CheckForStateTransition()
 {
+    CheckForSensorTransitions();
+    if (m_checkGamePadTransitions)
+    {
+        CheckForGamepadTransitions();
+    }
+}
+
+void StateMgr::CheckForSensorTransitions()
+{
+    // override this method if sensors could change states 
+}
+
+void StateMgr::CheckForGamepadTransitions()
+{
     // override this method if joystick inputs could change states;  Format 
     // would look something like:
     //    auto controller = TeleopControl::GetInstance();
@@ -143,7 +158,7 @@ void StateMgr::SetCurrentState
     bool            run
 )
 {
-    if (m_mech != nullptr )
+    if (m_mech != nullptr  && stateID < static_cast<int>(m_stateVector.size()))
     {
         auto state = m_stateVector[stateID];
         if ( state != nullptr && state != m_currentState)
@@ -169,6 +184,34 @@ void StateMgr::SetCurrentState
     }
 }
 
+/// @brief  Get the current Parameter parm value for the state of this mechanism
+/// @param PrimitiveParams* currentParams current set of primitive parameters
+/// @returns int state id - -1 indicates that there is not a state to set
+int StateMgr::GetCurrentStateParam
+(
+    PrimitiveParams*    currentParams
+)
+{
+    return -1;
+}
 
-
+void StateMgr::LogInformation() const
+{
+    if (m_mech != nullptr)
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentStateID);
+        if (m_currentState != nullptr)
+        {
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state"), m_currentState->GetStateName());
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentState->GetStateId());
+        }
+        auto index = 0;
+        for (auto state : m_stateVector)
+        {
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("StateMgr: ") + to_string(index) + string(" - ") + string("state name"), state->GetStateName());
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("StateMgr: ") + to_string(index) + string(" - ") + string("state id"), state->GetStateId());
+            index++;
+        }
+    }
+}
 

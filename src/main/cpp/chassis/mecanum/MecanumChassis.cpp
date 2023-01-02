@@ -53,7 +53,8 @@ MecanumChassis::MecanumChassis
     units::angular_velocity::degrees_per_second_t  maxAngSpeed,
     units::length::inch_t                          wheelDiameter,
     string                                         networktablename
-) : m_leftFrontMotor(leftFrontMotor),
+) : IChassis(),
+    m_leftFrontMotor(leftFrontMotor),
     m_leftBackMotor(leftBackMotor),
     m_rightFrontMotor(rightFrontMotor),
     m_rightBackMotor(rightBackMotor),
@@ -75,8 +76,8 @@ IChassis::CHASSIS_TYPE MecanumChassis::GetType() const
 void MecanumChassis::Drive
 (
     frc::ChassisSpeeds                     chassisSpeeds,
-    IHolonomicChassis::CHASSIS_DRIVE_MODE  mode,
-    IHolonomicChassis::HEADING_OPTION      headingOption
+    IChassis::CHASSIS_DRIVE_MODE  mode,
+    IChassis::HEADING_OPTION      headingOption
 ) 
 {
 
@@ -84,7 +85,7 @@ void MecanumChassis::Drive
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("MecanumChassis"), string("Run Vy"), chassisSpeeds.vy.value());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("MecanumChassis"), string("Run Omega"), chassisSpeeds.omega.value());
 
-    auto speeds = mode == IHolonomicChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED ? FieldDriveUtils::ConvertFieldOrientedToRobot(chassisSpeeds, m_pigeon) : chassisSpeeds;
+    auto speeds = mode == IChassis::CHASSIS_DRIVE_MODE::FIELD_ORIENTED ? FieldDriveUtils::ConvertFieldOrientedToRobot(chassisSpeeds, m_pigeon) : chassisSpeeds;
     auto forward = speeds.vx / m_maxSpeed;
     auto strafe  = speeds.vy / m_maxSpeed;
     auto rot     = speeds.omega / m_maxAngSpeed;
@@ -105,7 +106,7 @@ void MecanumChassis::Drive
 //Moves the robot
 void MecanumChassis::Drive(frc::ChassisSpeeds chassisSpeeds)
 {
-    Drive(chassisSpeeds, IHolonomicChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, IHolonomicChassis::HEADING_OPTION::MAINTAIN);
+    Drive(chassisSpeeds, IChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, IChassis::HEADING_OPTION::MAINTAIN);
 }
 
 frc::Pose2d MecanumChassis::GetPose() const

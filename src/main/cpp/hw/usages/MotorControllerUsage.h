@@ -45,24 +45,12 @@ class MotorControllerUsage
             DIFFERENTIAL_LEFT_FOLLOWER, 
             DIFFERENTIAL_RIGHT_MAIN, 
             DIFFERENTIAL_RIGHT_FOLLOWER, 
-            INTAKE_SPIN,
-            INTAKE_EXTEND,
-            BALL_TRANSFER_SPIN,
-            BALL_TRANSFER_LIFT,
-            LEFT_INDEXER,
-            RIGHT_INDEXER,
-            LIFT,
-            SHOOTER,
-            SHOOTER2,
-            CLIMBER_LIFT,
-            CLIMBER_ROTATE,
             MECANUM_LEFT_FRONT,
             MECANUM_LEFT_BACK,
             MECANUM_RIGHT_FRONT,
             MECANUM_RIGHT_BACK,
-            INTAKE,
-            INTAKE_TRANSFER,
-            ARM,
+            EXAMPLE,
+            // @ADDMECH add mechanisms here
             MAX_MOTOR_CONTROLLER_USAGES
         };
 

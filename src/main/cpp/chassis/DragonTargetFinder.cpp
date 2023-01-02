@@ -28,7 +28,7 @@ using namespace std;
 
 // in: 
 // out: Pose2d Field position of target center x,y,r(0_deg)
-frc::Pose2d DragonTargetFinder::GetPosCenterTarget()
+frc::Pose2d DragonTargetFinder::GetPosCenterTarget() const
 {
     return PosCenterTarget;
 }

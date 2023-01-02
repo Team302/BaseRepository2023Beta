@@ -17,7 +17,7 @@
 #pragma once
 #include <memory>
 
-#include <frc/AnalogGyro.h>
+//#include <frc/AnalogGyro.h>
 #include <frc/BuiltInAccelerometer.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
@@ -110,6 +110,10 @@ class SwerveChassis : public IChassis
             frc::ChassisSpeeds speeds, 
             CHASSIS_DRIVE_MODE  mode,
             HEADING_OPTION      headingOption
+        ) override;
+        void Drive
+        (
+            frc::ChassisSpeeds            chassisSpeeds
         ) override;
 
         /// @brief update the chassis odometry based on current states of the swerve modules and the pigeon
@@ -253,10 +257,10 @@ class SwerveChassis : public IChassis
         const double                                                m_deadband = 0.0;
         const units::angular_velocity::radians_per_second_t         m_angularDeadband = units::angular_velocity::radians_per_second_t(0.00);
         
-        frc::Translation2d m_frontLeftLocation;
-        frc::Translation2d m_frontRightLocation;
-        frc::Translation2d m_backLeftLocation;
-        frc::Translation2d m_backRightLocation;
+        frc::Translation2d m_frontLeftLocation{0.381_m, 0.381_m};
+        frc::Translation2d m_frontRightLocation{0.381_m, -0.381_m};
+        frc::Translation2d m_backLeftLocation{-0.381_m, 0.381_m};
+        frc::Translation2d m_backRightLocation{-0.381_m, -0.381_m};
         frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, 
                                                    m_frontRightLocation, 
                                                    m_backLeftLocation, 
@@ -264,13 +268,12 @@ class SwerveChassis : public IChassis
 
 
         // Gains are for example purposes only - must be determined for your own robot!
-        frc::SwerveDrivePoseEstimator<4> m_poseEstimator{   frc::Rotation2d{},
-                                                            frc::Pose2d{},
-                                                           {m_frontLeft.GetPosition(), m_frontRight.GetPosition(), m_backLeft.GetPosition(), m_backRight.GetPosition()},
-                                                            m_kinematics,
-                                                           {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1},
-                                                           {0.05, 0.05, 0.05, 0.05, 0.05},
-                                                           {0.1, 0.1, 0.1}};
+        frc::SwerveDrivePoseEstimator<4> m_poseEstimator{ m_kinematics,
+                                                          frc::Rotation2d{},
+                                                          {m_frontLeft.get()->GetPosition(), m_frontRight.get()->GetPosition(), m_backLeft.get()->GetPosition(), m_backRight.get()->GetPosition()},
+                                                          frc::Pose2d(),
+                                                          {0.1, 0.1, 0.1},
+                                                          {0.1, 0.1, 0.1}};
 
         const double kPMaintainHeadingControl = 1.5; //4.0, 3.0
         const double kPAutonSpecifiedHeading = 3.0;  // 4.0

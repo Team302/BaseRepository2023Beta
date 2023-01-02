@@ -21,15 +21,17 @@
 #include <vector>
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/StateStruc.h>
+#include <LoggableItem.h>
 
 // forward declare 
 class Mech;
+class PrimitiveParams;
 
 // Third Party Includes
 
-class StateMgr 
+class StateMgr : public LoggableItem
 {
     public:
 
@@ -55,20 +57,36 @@ class StateMgr
             bool        run
         );
 
+        /// @brief  Get the current Parameter parm value for the state of this mechanism
+        /// @param PrimitiveParams* currentParams current set of primitive parameters
+        /// @returns int state id - -1 indicates that there is not a state to set
+        virtual int GetCurrentStateParam
+        (
+            PrimitiveParams*    currentParams
+        );
+
         /// @brief  return the current state
         /// @return int - the current state
         inline int GetCurrentState() const { return m_currentStateID; };
-        inline IState* GetCurrentStatePtr() const { return m_stateVector[m_currentStateID]; };
+        inline State* GetCurrentStatePtr() const { return m_stateVector[m_currentStateID]; };
+
+        void LogInformation() const override;
+
+        void SetAreGamepadTransitionsChecked(bool checkGamepadTransitions) {m_checkGamePadTransitions = checkGamepadTransitions;}
+
 
     protected:
         virtual void CheckForStateTransition();
+        virtual void CheckForSensorTransitions();
+        virtual void CheckForGamepadTransitions();
 
     private:
 
         Mech*                   m_mech;
-        IState*                 m_currentState;
-        std::vector<IState*>    m_stateVector;
+        State*                  m_currentState;
+        std::vector<State*>     m_stateVector;
         int                     m_currentStateID;
+        bool                    m_checkGamePadTransitions;
 
 };
 

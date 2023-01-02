@@ -25,6 +25,7 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/SwerveModulePosition.h>
 
 #include <frc/kinematics/SwerveModuleState.h>
 
@@ -100,7 +101,8 @@ class SwerveModule
         /// @brief Get the current state of the module (speed of the wheel and angle of the wheel)
         /// @returns SwerveModuleState
         frc::SwerveModuleState GetState() const;
-        
+        frc::SwerveModulePosition GetPosition() const;
+
         /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)
         /// @param [in] const SwerveModuleState& referenceState:   state to set the module to
         /// @returns void

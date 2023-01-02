@@ -37,16 +37,17 @@
 #include <frc/Filesystem.h>
 
 // Team 302 includes
-#include <hw/DragonPigeon.h>
-#include <utils/Logger.h>
-#include <hw/xml/CameraXmlParser.h>
 #include <chassis/ChassisXmlParser.h>
+#include <hw/DragonPigeon.h>
+#include <hw/xml/CameraXmlParser.h>
 #include <hw/xml/ledXmlParser.h>
 #include <hw/xml/LimelightXmlParser.h>
-#include <mechanisms/base/MechanismXmlParser.h>
 #include <hw/xml/PDPXmlParser.h>
 #include <hw/xml/PigeonXmlParser.h>
+#include <hw/xml/RoboRioXmlParser.h>
+#include <mechanisms/base/MechanismXmlParser.h>
 #include <RobotXmlParser.h>
+#include <utils/Logger.h>
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>
@@ -83,6 +84,7 @@ void RobotXmlParser::ParseXML()
             unique_ptr<LedXmlParser> ledXML = make_unique<LedXmlParser>();
             unique_ptr<LimelightXmlParser> limelightXML = make_unique<LimelightXmlParser>();
             unique_ptr<PDPXmlParser> pdpXML = make_unique<PDPXmlParser>();
+            unique_ptr<RoboRioXmlParser> roborioXML = make_unique<RoboRioXmlParser>();
 
             // get the root node <robot>
             xml_node parent = doc.root();
@@ -98,6 +100,10 @@ void RobotXmlParser::ParseXML()
                     else if (strcmp(child.name(), "mechanism") == 0)
                     {
                         mechanismXML.get()->ParseXML(child);
+                    }
+                    else if (strcmp(child.name(), "roborio") == 0)
+                    {
+                        roborioXML.get()->ParseXML(child);
                     }
                     else if (strcmp(child.name(), "camera") == 0)
                     {

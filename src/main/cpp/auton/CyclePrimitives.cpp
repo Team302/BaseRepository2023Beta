@@ -33,16 +33,20 @@
 #include <mechanisms/MechanismFactory.h>
 #include <utils/Logger.h>
 #include <mechanisms/StateMgrHelper.h>
-#include <chassis/IHolonomicChassis.h>
+#include <chassis/IChassis.h>
 
 // @ADDMECH include for your mechanism state
 
 // Third Party Includes
 
-using namespace frc;
-using namespace std;
+using frc::DriverStation;
+using frc::Timer;
+using std::make_unique;
+using std::string;
 
-CyclePrimitives::CyclePrimitives() : m_primParams(), 
+
+CyclePrimitives::CyclePrimitives() : State(string("CyclePrimitives"), 0),
+									 m_primParams(), 
 									 m_currentPrimSlot(0), 
 								     m_currentPrim(nullptr), 
 									 m_primFactory(
@@ -129,11 +133,11 @@ void CyclePrimitives::RunDriveStop()
 		                                   0.0,                 // distance
 		                                   0.0,                 // target x location
 		                                   0.0,                 // target y location
-										   IHolonomicChassis::HEADING_OPTION::MAINTAIN,
+										   IChassis::HEADING_OPTION::MAINTAIN,
 		                                   0.0,                 // heading
 		                                   0.0,                 // start drive speed
 		                                   0.0,					// end drive speed
-										  std::string()
+										   string()
 										  // @ADDMECH mechanism state
 										 );             
 		m_DriveStop = m_primFactory->GetIPrimitive(params);

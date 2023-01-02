@@ -17,8 +17,9 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
 #include <mechanisms/base/Mech1MotorState.h>
 #include <mechanisms/base/MechSolenoidState.h>
@@ -27,13 +28,15 @@
 class ControlData;
 class Mech1IndMotorSolenoid;
 
-class Mech1IndMotorSolenoidState : public IState
+class Mech1IndMotorSolenoidState : public State
 {
     public:
 
         Mech1IndMotorSolenoidState
         (
             Mech1IndMotorSolenoid*          mechanism,
+            std::string                     identifer,
+            int                             stateId,
             ControlData*                    control,
             double                          target,
             MechanismTargetData::SOLENOID   solState
@@ -48,6 +51,8 @@ class Mech1IndMotorSolenoidState : public IState
 
         double GetTarget() const;
         double GetRPS() const;
+
+        void LogInformation() const override;
 
     private:
         Mech1IndMotorSolenoid*                  m_mechanism;

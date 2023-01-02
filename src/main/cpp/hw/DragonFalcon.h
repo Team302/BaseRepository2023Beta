@@ -122,11 +122,14 @@ class DragonFalcon : public IDragonMotorController
 
         void SetVoltage(units::volt_t output) override;
 
+        /**
         void UpdateFramePeriods
         (
 	        ctre::phoenix::motorcontrol::StatusFrameEnhanced	frame,
             uint8_t			                                    milliseconds
         ) override;
+        **/
+       
         void SetFramePeriodPriority
         (
             MOTOR_PRIORITY              priority

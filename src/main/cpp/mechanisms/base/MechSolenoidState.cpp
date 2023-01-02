@@ -16,11 +16,12 @@
 
 // C++ Includes
 #include <memory>
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/base/MechSolenoidState.h>
 #include <mechanisms/base/Mech1Solenoid.h>
 #include <utils/Logger.h>
@@ -36,8 +37,10 @@ using namespace std;
 MechSolenoidState::MechSolenoidState
 (
     Mech1Solenoid*                  mechanism,
+    string                          stateName,
+    int                             stateId,
     MechanismTargetData::SOLENOID   solState
-) : IState(),
+) : State(stateName, stateId),
     m_mechanism( mechanism ),
     m_solenoidState( solState )
 {
@@ -80,4 +83,13 @@ bool MechSolenoidState::AtTarget() const
 {
     return true;
 }
-
+void MechSolenoidState::LogInformation() const
+{
+    if (m_mechanism != nullptr)
+    {
+        auto ntName = m_mechanism->GetNetworkTableName();
+        auto id = GetStateName();
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("state name"), id);
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("Activated"), m_mechanism->IsSolenoidActivated());
+    }
+}

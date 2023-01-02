@@ -18,7 +18,8 @@
 
 // C++ Includes
 #include <memory>
-#include <map>
+#include <utility>
+#include <vector>
 
 // FRC includes
 #include <frc/Driverstation.h>
@@ -33,18 +34,19 @@ class TeleopControl
         enum FUNCTION_IDENTIFIER
         {
             UNKNOWN_FUNCTION,
-            SWERVE_DRIVE_DRIVE,
-            SWERVE_DRIVE_ROTATE,
-            SWERVE_DRIVE_STEER,
+            ROBOT_ORIENTED_DRIVE,
+            HOLONOMIC_DRIVE_FORWARD,
+            HOLONOMIC_DRIVE_ROTATE,
+            HOLONOMIC_DRIVE_STRAFE,
             REZERO_PIGEON,
             HOLD_POSITION,
             FINDTARGET,        
             DRIVE_TO_SHOOTING_SPOT,
-
             ARCADE_THROTTLE,
             ARCADE_STEER,            
 		    // @ADDMECH add functions here for robot
-            
+            EXAMPLE_FORWARD,
+            EXAMPLE_REVERSE,
             MAX_FUNCTIONS
         };
 
@@ -134,29 +136,36 @@ class TeleopControl
         //----------------------------------------------------------------------------------
         TeleopControl();
 
-        void Initialize();
-        bool IsInitialized() const;
-
         //----------------------------------------------------------------------------------
         // Method:      ~OperatorInterface <<destructor>>
         // Description: This will clean up the object
         //----------------------------------------------------------------------------------
         virtual ~TeleopControl() = default;
 
+        void Initialize() const;
+        bool IsInitialized() const;
+
+        std::pair<IDragonGamePad*, IDragonGamePad::AXIS_IDENTIFIER> GetAxisInfo
+        (
+            TeleopControl::FUNCTION_IDENTIFIER  function          // <I> - controller with this function
+        ) const;
+
+        std::pair<IDragonGamePad*, IDragonGamePad::BUTTON_IDENTIFIER> GetButtonInfo
+        (
+            TeleopControl::FUNCTION_IDENTIFIER  function          // <I> - controller with this function
+        ) const;
+
         //----------------------------------------------------------------------------------
         // Attributes
         //----------------------------------------------------------------------------------
-        static TeleopControl*               m_instance; // Singleton instance of this class
+        static TeleopControl*               m_instance;  // Singleton instance of this class
 
-        std::map<FUNCTION_IDENTIFIER, IDragonGamePad::AXIS_IDENTIFIER> m_axisMap;
-        std::map<FUNCTION_IDENTIFIER, IDragonGamePad::BUTTON_IDENTIFIER> m_buttonMap;
-        std::map<FUNCTION_IDENTIFIER, int> m_controllerMap;
+        mutable std::vector<IDragonGamePad::AXIS_IDENTIFIER>    m_axisIDs;
+        mutable std::vector<IDragonGamePad::BUTTON_IDENTIFIER>  m_buttonIDs;
+        mutable std::vector<int>							    m_controllerIndex;
 
-        std::vector<IDragonGamePad::AXIS_IDENTIFIER>    m_axisIDs;
-        std::vector<IDragonGamePad::BUTTON_IDENTIFIER>  m_buttonIDs;
-        std::vector<int>							    m_controllerIndex;
-        int                                             m_numControllers;
+        mutable int                                             m_numControllers;
 
-        IDragonGamePad*			                        m_controller[frc::DriverStation::kJoystickPorts];
+        mutable IDragonGamePad*			                        m_controller[frc::DriverStation::kJoystickPorts];
 };
 

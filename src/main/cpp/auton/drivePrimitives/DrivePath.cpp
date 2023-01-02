@@ -19,6 +19,7 @@
 //FRC Includes
 #include <frc/controller/PIDController.h>
 #include <frc/controller/ProfiledPIDController.h>
+#include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/Filesystem.h>
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <units/angular_velocity.h>
@@ -28,7 +29,6 @@
 #include <auton/drivePrimitives/DrivePath.h>
 #include <chassis/ChassisFactory.h>
 #include <chassis/IChassis.h>
-#include <chassis/IHolonomicChassis.h>
 #include <utils/Logger.h>
 
 
@@ -38,7 +38,6 @@ using namespace frc;
 using namespace wpi::math;
 
 DrivePath::DrivePath() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()),
-                         m_holonomicChassis(ChassisFactory::GetChassisFactory()->GetHolonomicChassis()),
                          m_timer(make_unique<Timer>()),
                          m_currentChassisPosition(m_chassis.get()->GetPose()),
                          m_trajectory(),
@@ -57,7 +56,7 @@ DrivePath::DrivePath() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChas
                          m_deltaY(0.0),
                          m_trajectoryStates(),
                          m_desiredState(),
-                         m_headingOption(IHolonomicChassis::HEADING_OPTION::MAINTAIN),
+                         m_headingOption(IChassis::HEADING_OPTION::MAINTAIN),
                          m_heading(0.0),
                          m_maxTime(-1.0),
                          m_ntName("DrivePath")
@@ -152,28 +151,28 @@ void DrivePath::Run()
             Rotation2d rotation = m_desiredState.pose.Rotation();
             switch (m_headingOption)
             {
-                case IHolonomicChassis::HEADING_OPTION::MAINTAIN:
+                case IChassis::HEADING_OPTION::MAINTAIN:
                    rotation = m_currentChassisPosition.Rotation();
                    break;
 
-                case IHolonomicChassis::HEADING_OPTION::POLAR_HEADING:
+                case IChassis::HEADING_OPTION::POLAR_HEADING:
                     [[fallthrough]];
-                case IHolonomicChassis::HEADING_OPTION::TOWARD_GOAL:
+                case IChassis::HEADING_OPTION::TOWARD_GOAL:
                     [[fallthrough]];
-                case IHolonomicChassis::HEADING_OPTION::TOWARD_GOAL_DRIVE:
+                case IChassis::HEADING_OPTION::TOWARD_GOAL_DRIVE:
                     [[fallthrough]];
-                case IHolonomicChassis::HEADING_OPTION::TOWARD_GOAL_LAUNCHPAD:
+                case IChassis::HEADING_OPTION::TOWARD_GOAL_LAUNCHPAD:
                     //rotation = Rotation2d(units::angle::degree_t(m_targetFinder.GetTargetAngleD(m_currentChassisPosition)));
                     break;
 
-                case IHolonomicChassis::HEADING_OPTION::SPECIFIED_ANGLE:
+                case IChassis::HEADING_OPTION::SPECIFIED_ANGLE:
                     rotation = Rotation2d(units::angle::degree_t(m_heading));
-                    m_holonomicChassis.get()->SetTargetHeading(units::angle::degree_t(m_heading));
+                    m_chassis.get()->SetTargetHeading(units::angle::degree_t(m_heading));
                     break;
 
-                case IHolonomicChassis::HEADING_OPTION::LEFT_INTAKE_TOWARD_BALL:
+                case IChassis::HEADING_OPTION::LEFT_INTAKE_TOWARD_BALL:
                     [[fallthrough]];
-                case IHolonomicChassis::HEADING_OPTION::RIGHT_INTAKE_TOWARD_BALL:
+                case IChassis::HEADING_OPTION::RIGHT_INTAKE_TOWARD_BALL:
                     // TODO: need to get info from camera
                     rotation = m_desiredState.pose.Rotation();
                     break;
@@ -185,7 +184,7 @@ void DrivePath::Run()
             refChassisSpeeds = m_holoController.Calculate(m_currentChassisPosition, 
                                                           m_desiredState, 
                                                           m_desiredState.pose.Rotation());
-            m_holonomicChassis.get()->Drive(refChassisSpeeds, IHolonomicChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, m_headingOption);
+            m_chassis.get()->Drive(refChassisSpeeds, IChassis::CHASSIS_DRIVE_MODE::ROBOT_ORIENTED, m_headingOption);
         }
         else
         {

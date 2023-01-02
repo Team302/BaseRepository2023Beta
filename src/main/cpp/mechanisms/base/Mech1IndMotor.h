@@ -48,7 +48,7 @@ class Mech1IndMotor :  public Mech
 	    ~Mech1IndMotor() override = default;
 
         /// @brief log data to the network table if it is activated and time period has past
-        void LogHardwareInformation() override;
+        void LogInformation() const override;
 
         /// @brief update the output to the mechanism using the current controller and target value(s)
         /// @return void 

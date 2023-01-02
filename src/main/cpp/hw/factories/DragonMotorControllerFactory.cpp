@@ -82,8 +82,11 @@ shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorCont
         talon->EnableBrakeMode( brakeMode );
         talon->Invert( inverted );
         talon->SetSensorInverted( sensorInverted );
-        talon->ConfigSelectedFeedbackSensor( feedbackDevice, 0, 50 );
-        talon->ConfigSelectedFeedbackSensor( feedbackDevice, 1, 50 );
+        if (feedbackDevice != FeedbackDevice::None)
+        {
+            talon->ConfigSelectedFeedbackSensor( feedbackDevice, 0, 50 );
+            talon->ConfigSelectedFeedbackSensor( feedbackDevice, 1, 50 );
+        }
 
         talon->ConfigPeakCurrentLimit( peakCurrentLimit, 50 );
         talon->ConfigPeakCurrentDuration( peakCurrentDuration, 50 );

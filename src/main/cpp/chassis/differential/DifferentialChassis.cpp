@@ -37,14 +37,15 @@ DifferentialChassis::DifferentialChassis
     units::length::inch_t                          wheelDiameter,
     string                                         networktablename,
     string                                         controlfilename 
-) : m_leftMotor(leftMotor),
+) : IChassis(),
+    m_leftMotor(leftMotor),
     m_rightMotor(rightMotor),
     m_maxSpeed(maxSpeed),
     m_maxAngSpeed(maxAngSpeed),
     m_wheelDiameter(wheelDiameter),
     m_track(trackWidth),
     m_kinematics(new frc::DifferentialDriveKinematics(trackWidth)),
-    m_differentialOdometry(new frc::DifferentialDriveOdometry(frc::Rotation2d(), frc::Pose2d())),
+    //m_differentialOdometry(new frc::DifferentialDriveOdometry(frc::Rotation2d(), frc::Pose2d())),
     m_controlFile(controlfilename),
     m_ntName(networktablename)
 {
@@ -70,6 +71,22 @@ void DifferentialChassis::Drive(frc::ChassisSpeeds chassisSpeeds)
         m_rightMotor.get()->Set(wheels.right/m_maxSpeed);
     }
 }
+
+void DifferentialChassis::Drive
+(
+    frc::ChassisSpeeds              chassisSpeeds,
+    IChassis::CHASSIS_DRIVE_MODE    mode,
+    IChassis::HEADING_OPTION        headingOption
+)
+{
+    Drive(chassisSpeeds);
+}
+
+void DifferentialChassis::SetTargetHeading(units::angle::degree_t targetYaw) 
+{
+    
+}
+
 
 frc::Pose2d DifferentialChassis::GetPose() const
 {

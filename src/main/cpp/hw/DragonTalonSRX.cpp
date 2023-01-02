@@ -210,6 +210,7 @@ double DragonTalonSRX::GetCurrent() const
 	return 0.0;
 }
 
+/**
 void DragonTalonSRX::UpdateFramePeriods
 (
 	ctre::phoenix::motorcontrol::StatusFrameEnhanced	frame,
@@ -218,11 +219,14 @@ void DragonTalonSRX::UpdateFramePeriods
 {
 	m_talon.get()->SetStatusFramePeriod( frame, milliseconds, 0 );
 }
+**/
 void DragonTalonSRX::SetFramePeriodPriority
 (
 	MOTOR_PRIORITY              priority
 )
 {
+	return;
+	/**
 	switch ( priority )
 	{
 		case HIGH:
@@ -274,6 +278,7 @@ void DragonTalonSRX::SetFramePeriodPriority
 		break;
 
 	}
+	**/
 }
 
 

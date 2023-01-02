@@ -22,7 +22,6 @@
 #include <auton/drivePrimitives/IPrimitive.h>
 #include <chassis/ChassisFactory.h>
 #include <chassis/IChassis.h>
-#include <chassis/IHolonomicChassis.h>
 
 //FRC,WPI Includes
 #include <frc/controller/HolonomicDriveController.h>
@@ -59,7 +58,6 @@ private:
 
 
     std::shared_ptr<IChassis>               m_chassis;
-    std::shared_ptr<IHolonomicChassis>      m_holonomicChassis;
     std::unique_ptr<frc::Timer>             m_timer;
 
     frc::Pose2d                             m_currentChassisPosition;
@@ -77,7 +75,7 @@ private:
     double                                  m_deltaY;
     std::vector<frc::Trajectory::State>     m_trajectoryStates;
     frc::Trajectory::State                  m_desiredState;
-    IHolonomicChassis::HEADING_OPTION       m_headingOption;
+    IChassis::HEADING_OPTION                m_headingOption;
     double                                  m_heading;
     double                                  m_maxTime;
     std::string                             m_ntName;

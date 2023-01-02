@@ -37,7 +37,7 @@ class DragonTargetFinder
     
         //   in:
         //   out: Pose2d Field position of target center x,y,r(0_deg)    
-        frc::Pose2d GetPosCenterTarget() {return frc::Pose2d(8.212_m, 4.162_m,0_deg);};
+        frc::Pose2d GetPosCenterTarget() const; 
     
         //   in: Current Position Pose2d
         //   out: double Target angle relative to robots current rotation 0 to 180, -180 to 0    

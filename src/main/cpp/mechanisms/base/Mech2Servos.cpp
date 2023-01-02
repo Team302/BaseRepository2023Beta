@@ -41,11 +41,16 @@ Mech2Servos::Mech2Servos
     DragonServo*                                servo,
     DragonServo*                                servo2
 ) : Mech(type, controlFileName, networkTableName),
-    m_servo(servo)
+    m_servo(servo),
+    m_servo2(servo2)
 {
     if (m_servo == nullptr )
     {
         Logger::GetLogger()->LogData( LOGGER_LEVEL::ERROR_ONCE, networkTableName, string( "Mech2Servos constructor" ), string( "servo is nullptr" ) );
+    }
+    if (m_servo2 == nullptr )
+    {
+        Logger::GetLogger()->LogData( LOGGER_LEVEL::ERROR_ONCE, networkTableName, string( "Mech2Servos constructor" ), string( "servo2 is nullptr" ) );
     }
 }
 
@@ -61,6 +66,7 @@ void Mech2Servos::SetAngle
     if ( m_servo != nullptr )
     {
         m_servo->SetAngle( angle );
+        Logger::GetLogger()->LogData( LOGGER_LEVEL::PRINT, GetNetworkTableName(), string( "Setting Servo 1" ), angle);
     }
 }
 /// @brief      Move servo to the desired angle
@@ -74,7 +80,8 @@ void Mech2Servos::SetAngle2
     if ( m_servo2 != nullptr )
     {
         m_servo2->SetAngle( angle );
-    }
+        Logger::GetLogger()->LogData( LOGGER_LEVEL::PRINT, GetNetworkTableName(), string( "Setting Servo 2" ), angle);
+   }
 }
 
 double Mech2Servos::GetAngle() const
@@ -97,7 +104,7 @@ double Mech2Servos::GetAngle2() const
 
 
 /// @brief log data to the network table if it is activated and time period has past
-void Mech2Servos::LogHardwareInformation()
+void Mech2Servos::LogInformation() const
 {
 }
 

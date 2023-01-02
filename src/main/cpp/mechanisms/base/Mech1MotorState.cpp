@@ -16,11 +16,12 @@
 
 // C++ Includes
 #include <memory>
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/base/Mech1MotorState.h>
 #include <mechanisms/controllers/ControlData.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
@@ -38,9 +39,11 @@ using namespace std;
 Mech1MotorState::Mech1MotorState
 (
     Mech1IndMotor*                  mechanism,
+    string                          stateName,
+    int                             stateId,
     ControlData*                    control,
     double                          target
-) : IState(),
+) : State(stateName, stateId),
     m_mechanism( mechanism ),
     m_control( control ),
     m_target( target ),
@@ -130,12 +133,9 @@ void Mech1MotorState::Init()
 
 void Mech1MotorState::Run()           
 {
-    if ( m_mechanism != nullptr && m_control != nullptr )
+    if ( m_mechanism != nullptr)
     {
         m_mechanism->Update();
-        auto ntName = m_mechanism->GetNetworkTableName();
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("Target"), GetTarget());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, string("Speed"), GetRPS());
     }
 }
 
@@ -165,3 +165,18 @@ bool Mech1MotorState::AtTarget() const
     return same;
 }
 
+void Mech1MotorState::LogInformation() const
+{
+    if ( m_mechanism != nullptr)
+    {
+        auto ntName = m_mechanism->GetNetworkTableName();
+        auto statename = GetStateName();
+        auto idStatename = string("Mech1MotorState") + to_string(GetStateId()) + string(" - ") + statename;
+        auto idStatenameTarget = idStatename + string(" - Target");
+        auto idStatenameSpeed = idStatename + string(" - Speed");
+
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatename, GetStateName());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatenameTarget, GetTarget());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatenameSpeed, GetRPS());
+    }
+}

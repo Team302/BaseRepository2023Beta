@@ -1,13 +1,4 @@
 
-/*========================================================================================================
- * DragonServoFactory.cpp
- *========================================================================================================
- *
- * File Description:  Create DragonServos and allow external clients to retrieve created DragonServos
- *
- *========================================================================================================*/
-
-
 //====================================================================================================================================================
 // Copyright 2022 Lake Orion Robotics FIRST Team 302
 //
@@ -75,19 +66,16 @@ DragonServo* DragonServoFactory::CreateDragonServo
     double                      maxAngle            
 )
 {
-    DragonServo* servo = nullptr;
-    switch ( deviceUsage )
+    if (deviceUsage > ServoUsage::SERVO_USAGE::UNKNOWN_SERVO_USAGE && 
+        deviceUsage < ServoUsage::SERVO_USAGE::MAX_SERVO_USAGES)
     {
-        case ServoUsage::SERVO_USAGE::RELEASE_SERVO:
-            servo = new DragonServo(deviceUsage, deviceID, minAngle, maxAngle);
-            m_servos[ServoUsage::SERVO_USAGE::RELEASE_SERVO] = servo;
-            break;
-        default:
-            string msg = "Unknown Servo Usage " + to_string( deviceUsage );
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonServoFactory"), string("CreateDragonServo"), msg );
-            break;
+        m_servos[deviceUsage] = new DragonServo(deviceUsage, deviceID, minAngle, maxAngle);
+        return m_servos[deviceUsage];
     }
-    return servo;
+
+    string msg = "Unknown Servo Usage " + to_string( deviceUsage );
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonServoFactory"), string("CreateDragonServo"), msg );
+    return nullptr;
 }
 
 

@@ -22,7 +22,6 @@
 #include <units/angular_velocity.h>
 
 #include <chassis/IChassis.h>
-#include <chassis/IHolonomicChassis.h>
 #include <hw/interfaces/IDragonMotorController.h>
 
 namespace frc
@@ -34,7 +33,7 @@ namespace frc
 }
 class DragonPigeon;
 
-class MecanumChassis : public IChassis , public IHolonomicChassis
+class MecanumChassis : public IChassis 
 {
 
     public:
@@ -57,8 +56,8 @@ class MecanumChassis : public IChassis , public IHolonomicChassis
         void Drive
         (
             frc::ChassisSpeeds                      chassisSpeeds,
-            IHolonomicChassis::CHASSIS_DRIVE_MODE   mode,
-            IHolonomicChassis::HEADING_OPTION       headingOption
+            IChassis::CHASSIS_DRIVE_MODE   mode,
+            IChassis::HEADING_OPTION       headingOption
         ) override;
         
         inline void Initialize() override {};

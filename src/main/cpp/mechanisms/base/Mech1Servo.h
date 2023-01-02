@@ -55,11 +55,10 @@ class Mech1Servo : public Mech
         
 
         /// @brief log data to the network table if it is activated and time period has past
-        void LogHardwareInformation() override;
+        void LogInformation() const override;
 
     private:
         DragonServo*                                m_servo;
-
 };
 
 

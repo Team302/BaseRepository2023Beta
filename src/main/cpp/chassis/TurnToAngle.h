@@ -15,7 +15,7 @@
 //====================================================================================================================================================
 
 #pragma once
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/angular_acceleration.h>
@@ -27,7 +27,7 @@
 #include <chassis/swerve/SwerveChassis.h>
 
 ///	 @brief     this state will allow the robot to rotate to a specified angle
-class TurnToAngle : public IState
+class TurnToAngle : public State
 {
 	public:
         

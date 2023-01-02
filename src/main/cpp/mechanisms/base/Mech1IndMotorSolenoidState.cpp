@@ -16,11 +16,12 @@
 
 // C++ Includes
 #include <memory>
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/base/Mech1IndMotorSolenoidState.h>
 #include <mechanisms/controllers/ControlData.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
@@ -38,14 +39,16 @@ using namespace std;
 Mech1IndMotorSolenoidState::Mech1IndMotorSolenoidState
 (
     Mech1IndMotorSolenoid*          mechanism,
+    string                          stateName,
+    int                             stateId,
     ControlData*                    control,
     double                          target,
     MechanismTargetData::SOLENOID   solState
 
-) : IState(),
+) : State(stateName, stateId),
     m_mechanism( mechanism ),
-    m_motorState(make_shared<Mech1MotorState>(mechanism->Get1IndMotorMech(), control, target)),
-    m_solenoidState(make_shared<MechSolenoidState>(mechanism->GetSolenoidMech(), solState))
+    m_motorState(make_shared<Mech1MotorState>(mechanism->Get1IndMotorMech(), stateName, stateId, control, target)),
+    m_solenoidState(make_shared<MechSolenoidState>(mechanism->GetSolenoidMech(), stateName, stateId, solState))
 {
     if ( control == nullptr )
     {
@@ -91,3 +94,8 @@ double Mech1IndMotorSolenoidState::GetRPS() const
     return m_motorState.get()->GetRPS();
 }
 
+void Mech1IndMotorSolenoidState::LogInformation() const
+{
+    m_motorState.get()->LogInformation();
+    m_solenoidState.get()->LogInformation();
+}

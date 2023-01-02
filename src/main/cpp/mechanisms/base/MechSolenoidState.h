@@ -15,20 +15,23 @@
 //====================================================================================================================================================
 
 #pragma once
+#include <string>
 
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <mechanisms/controllers/MechanismTargetData.h>
 
 // forward declares
 class Mech1Solenoid;
 
-class MechSolenoidState : public IState
+class MechSolenoidState : public State
 {
     public:
 
         MechSolenoidState
         (
             Mech1Solenoid*                  mechanism,
+            std::string                     stateName,
+            int                             stateId,
             MechanismTargetData::SOLENOID   solState
         );
         MechSolenoidState() = delete;
@@ -38,6 +41,7 @@ class MechSolenoidState : public IState
         void Run() override;
         void Exit() override;
         bool AtTarget() const override;
+        void LogInformation() const override;
 
     private:
 

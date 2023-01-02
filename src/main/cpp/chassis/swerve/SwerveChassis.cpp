@@ -150,6 +150,10 @@ units::angular_velocity::degrees_per_second_t SwerveChassis::CalcHeadingCorrecti
 /// @param [in] frc::ChassisSpeeds  speeds:         kinematics for how to move the chassis
 /// @param [in] CHASSIS_DRIVE_MODE  mode:           How the input chassis speeds are interpreted
 /// @param [in] HEADING_OPTION      headingOption:  How the robot top should be facing
+void SwerveChassis::Drive(frc::ChassisSpeeds chassisSpeeds)
+{
+    Drive(chassisSpeeds, CHASSIS_DRIVE_MODE::FIELD_ORIENTED, HEADING_OPTION::MAINTAIN);
+}
 void SwerveChassis::Drive
 ( 
     ChassisSpeeds               speeds, 

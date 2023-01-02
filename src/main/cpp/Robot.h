@@ -19,12 +19,13 @@
 
 #include <frc/TimedRobot.h>
 
-class CyclePrimitives;
-class TeleopControl;
 class ArcadeDrive;
-class SwerveDrive;
+class CyclePrimitives;
 class DragonLimelight;
+class HolonomicDrive;
 class IChassis;
+class TeleopControl;
+
 
 class Robot : public frc::TimedRobot 
 {
@@ -44,8 +45,8 @@ class Robot : public frc::TimedRobot
         TeleopControl*        m_controller;
         IChassis*             m_chassis;
         CyclePrimitives*      m_cyclePrims;
-        frc::Timer*           m_timer;
-        SwerveDrive*          m_swerve;
+        HolonomicDrive*       m_holonomic;
+        bool                  m_startLogging;
         ArcadeDrive*          m_arcade;
         DragonLimelight*      m_dragonLimeLight;
 };

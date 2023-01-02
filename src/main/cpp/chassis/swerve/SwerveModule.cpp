@@ -250,6 +250,10 @@ SwerveModuleState SwerveModule::GetState() const
 }
 
 
+frc::SwerveModulePosition SwerveModule::GetPosition() const {
+  return {units::meter_t{0.0},
+          units::radian_t{0.0}};
+}
 
 
 /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)

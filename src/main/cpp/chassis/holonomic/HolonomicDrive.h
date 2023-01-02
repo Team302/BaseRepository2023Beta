@@ -19,12 +19,11 @@
 
 //Team 302 includes
 #include <TeleopControl.h>
-#include <mechanisms/base/IState.h>
+#include <State.h>
 
 class IChassis;
-class IHolonomicChassis;
 
-class HolonomicDrive : public IState
+class HolonomicDrive : public State
 {
     public:
 
@@ -39,6 +38,5 @@ class HolonomicDrive : public IState
     private:
         inline TeleopControl* GetController() const { return m_controller; }
         IChassis*                           m_chassis;
-        IHolonomicChassis*                  m_holonomicChassis;
         TeleopControl*                      m_controller;
 };

@@ -20,11 +20,23 @@
 
 class Mech;
 class MechanismTargetData;
+class PrimitiveParams;
+
 class StateMgrHelper 
 {
     public:
+        static void InitStateMgrs();
         static void RunCurrentMechanismStates();
-        static IState* CreateState
+        static void SetMechanismStateFromParam
+        (
+            PrimitiveParams*        params
+        );
+        static void SetCheckGamepadInputsForStateTransitions
+        (
+            bool  check
+        );
+
+        static State* CreateState
         (
             Mech*                       mech,
             StateStruc&                 stateInfo,

@@ -18,7 +18,6 @@
 #include <memory>
 
 // FRC includes
-#include <frc/drive/Vector2d.h>
 #include <units/velocity.h>
 #include <units/angular_velocity.h>
 
@@ -27,7 +26,7 @@
 #include <hw/DragonPigeon.h>
 #include <gamepad/IDragonGamePad.h>
 #include <TeleopControl.h>
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <chassis/ChassisFactory.h>
 #include <hw/factories/PigeonFactory.h>
 #include <utils/Logger.h>
@@ -36,7 +35,7 @@ using namespace std;
 using namespace frc;
 
 /// @brief initialize the object and validate the necessary items are not nullptrs
-ArcadeDrive::ArcadeDrive() : IState(),
+ArcadeDrive::ArcadeDrive() : State(string("ArcadeDrive"), -1),
                              m_chassis(ChassisFactory::GetChassisFactory()->GetDifferentialChassis()),
                              m_controller(TeleopControl::GetInstance())
 {

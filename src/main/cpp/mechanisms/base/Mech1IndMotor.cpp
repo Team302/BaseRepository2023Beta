@@ -64,7 +64,7 @@ void Mech1IndMotor::Update()
     {
         m_motor.get()->Set(m_target );
     }
-    LogHardwareInformation();
+    LogInformation();
 }
 
 void Mech1IndMotor::UpdateTarget
@@ -110,7 +110,7 @@ void Mech1IndMotor::SetControlConstants
 
 
 /// @brief log data to the network table if it is activated and time period has past
-void Mech1IndMotor::LogHardwareInformation()
+void Mech1IndMotor::LogInformation() const
 {
     auto ntName = GetNetworkTableName();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, "Speed", GetSpeed() );

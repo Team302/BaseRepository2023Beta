@@ -32,6 +32,7 @@
 #include <chassis/swerve/SwerveModule.h>
 #include <chassis/swerve/SwerveChassis.h>
 #include <chassis/differential/DifferentialChassis.h>
+#include <chassis/mecanum/MecanumChassis.h>
 
 namespace ctre
 {
@@ -60,8 +61,9 @@ class ChassisFactory
 
 			IChassis* GetIChassis();
 
-			inline SwerveChassis* GetSwerveChassis() {return (SwerveChassis*) m_chassis; };
-			inline DifferentialChassis* GetDifferentialChassis() {return (DifferentialChassis*) m_chassis; };
+			inline SwerveChassis* GetSwerveChassis() const {return m_swerve; };
+			inline DifferentialChassis* GetDifferentialChassis() const {return m_differential; };
+			inline MecanumChassis* GetMecanumChassis() const {return m_mecanum; };
 
 			//=======================================================================================
 			// Method:  		CreateChassis
@@ -123,6 +125,9 @@ class ChassisFactory
 			ChassisFactory() = default;
 			~ChassisFactory() = default;
 			IChassis*        m_chassis;
+			DifferentialChassis*						m_differential;
+			MecanumChassis*								m_mecanum;
+			SwerveChassis*								m_swerve;
 			std::shared_ptr<SwerveModule>	    		m_leftFront;
 			std::shared_ptr<SwerveModule>	    		m_leftBack;
 			std::shared_ptr<SwerveModule>	    		m_rightFront;

@@ -24,7 +24,7 @@
 #include <frc/Timer.h>
 
 // Team 302 includes
-#include <mechanisms/base/IState.h>
+#include <State.h>
 
 // Third Party Includes
 
@@ -40,7 +40,7 @@ class LeftIndexerStateMgr;
 class RightIndexerStateMgr;
 class LiftStateMgr;
 
-class CyclePrimitives : public IState
+class CyclePrimitives : public State
 {
 	public:
 		CyclePrimitives();

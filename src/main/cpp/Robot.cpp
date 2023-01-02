@@ -10,49 +10,51 @@
 #include <cameraserver/CameraServer.h>
 
 #include <auton/CyclePrimitives.h>
+#include <chassis/differential/ArcadeDrive.h>
 #include <chassis/ChassisFactory.h>
 #include <chassis/IChassis.h>
-#include <chassis/differential/ArcadeDrive.h>
-#include <chassis/swerve/SwerveDrive.h>
+#include <chassis/holonomic/HolonomicDrive.h>
+#include <chassis/mecanum/MecanumChassis.h>
+#include <mechanisms/StateMgrHelper.h>
+#include <RobotXmlParser.h>
 #include <TeleopControl.h>
-#include <hw/DragonLimelight.h>
-#include <hw/factories/LimelightFactory.h>
 #include <utils/Logger.h>
 #include <utils/LoggerData.h>
 #include <utils/LoggerEnums.h>
-#include <RobotXmlParser.h>
-#include <mechanisms/StateMgrHelper.h>
+#include <LoggableItemMgr.h>
 
 using namespace std;
 
 void Robot::RobotInit() 
 {
+    m_startLogging = false;
     Logger::GetLogger()->PutLoggingSelectionsOnDashboard();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));   
-
-    //CameraServer::SetSize(CameraServer::kSize320x240);
-    //CameraServer::StartAutomaticCapture();
+    
+    m_controller = TeleopControl::GetInstance();
 
     // Read the XML file to build the robot 
     auto XmlParser = new RobotXmlParser();
     XmlParser->ParseXML();
 
-    // Get local copies of the teleop controller and the chassis
-    m_controller = TeleopControl::GetInstance();
     auto factory = ChassisFactory::GetChassisFactory();
     m_chassis = factory->GetIChassis();
-    m_swerve = nullptr;
+    m_holonomic = nullptr;
     m_arcade = nullptr;
     if (m_chassis != nullptr)
     {
-         m_swerve = m_chassis->GetType() == IChassis::CHASSIS_TYPE::SWERVE ? new SwerveDrive() : nullptr;
+        auto type = m_chassis->GetType();
+         m_holonomic = type == IChassis::CHASSIS_TYPE::SWERVE || type == IChassis::CHASSIS_TYPE::MECANUM ? new HolonomicDrive() : nullptr;
          m_arcade = m_chassis->GetType() == IChassis::CHASSIS_TYPE::DIFFERENTIAL ? new ArcadeDrive() : nullptr;
-    }
-    m_dragonLimeLight = LimelightFactory::GetLimelightFactory()->GetLimelight();
-        
+    }        
+    
+    StateMgrHelper::InitStateMgrs();
 
     m_cyclePrims = new CyclePrimitives();
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("end"));}
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("end"));
+
+    m_startLogging = true;
+}
 
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -75,7 +77,11 @@ void Robot::RobotPeriodic()
         LoggerData  data = {LOGGER_LEVEL::PRINT, string("DragonLimelight"), {}, {}, {horAngle, distance}, {}};
         Logger::GetLogger()->LogData(data);
     }
-    Logger::GetLogger()->PeriodicLog();
+    if (m_startLogging)
+    {
+        LoggableItemMgr::GetInstance()->LogData();
+        Logger::GetLogger()->PeriodicLog();
+    }
 }
 
 /**
@@ -92,6 +98,7 @@ void Robot::RobotPeriodic()
 void Robot::AutonomousInit() 
 {
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("AutonomousInit"), string("arrived"));   
+    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(false);
     if (m_cyclePrims != nullptr)
     {
         m_cyclePrims->Init();
@@ -110,11 +117,12 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit() 
 {
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("TeleopInit"), string("arrived"));   
+    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(true);
     if (m_chassis != nullptr && m_controller != nullptr)
     {
-        if (m_swerve != nullptr)
+        if (m_holonomic != nullptr)
         {
-            m_swerve->Init();
+            m_holonomic->Init();
         }
         else if (m_arcade != nullptr)
         {
@@ -129,11 +137,12 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("TeleopPeriodic"), string("arrived"));   
     if (m_chassis != nullptr && m_controller != nullptr)
     {
-        if (m_swerve != nullptr)
+        if (m_holonomic != nullptr)
         {
-            m_swerve->Run();
+            m_holonomic->Run();
         }
         else if (m_arcade != nullptr)
         {
@@ -141,11 +150,15 @@ void Robot::TeleopPeriodic()
         }
     }
     StateMgrHelper::RunCurrentMechanismStates();
+
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("TeleopPeriodic"), string("end"));
+
 }
 
 void Robot::DisabledInit() 
 {
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("DisabledInit"), string("arrived"));   
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("DisabledInit"), string("end"));   
 }
 
 void Robot::DisabledPeriodic() 

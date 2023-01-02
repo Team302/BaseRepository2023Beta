@@ -25,7 +25,7 @@
 #include <chassis/ChassisFactory.h>
 #include <chassis/swerve/SwerveChassis.h>
 #include <chassis/TurnToAngle.h>
-#include <mechanisms/base/IState.h>
+#include <State.h>
 #include <utils/AngleUtils.h>
 
 using namespace frc;
@@ -34,7 +34,8 @@ using namespace std;
 TurnToAngle::TurnToAngle
 (
     units::angle::degree_t  targetAngle
-) : m_targetAngle(targetAngle),
+) : State(string("TurnToAAngle"), -1),
+    m_targetAngle(targetAngle),
     m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
     m_atTarget(false)
 {
