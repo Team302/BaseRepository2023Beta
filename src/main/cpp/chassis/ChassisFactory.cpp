@@ -125,7 +125,6 @@ IChassis* ChassisFactory::CreateChassis
                                           wheelDiameter,
                                           wheelBase, 
                                           track, 
-                                          odometryComplianceCoefficient,
                                           maxVelocity, 
                                           maxAngularSpeed, 
                                           maxAcceleration,

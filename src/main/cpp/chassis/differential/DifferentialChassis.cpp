@@ -21,6 +21,7 @@
 #include <frc/drive/DifferentialDrive.h>
 
 #include <chassis/differential/DifferentialChassis.h>
+#include <chassis/swerve/SwerveOdometry.h>
 
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
 
@@ -146,4 +147,36 @@ void DifferentialChassis::SetEncodersToZero()
         driveMotorSensors.SetIntegratedSensorPosition(0, 0);
     }
 }
+
+
+// next 3 need to be rationalized with IChassis
+SwerveOdometry* DifferentialChassis::GetOdometry() const 
+{
+    return nullptr;
+}
+void DifferentialChassis::Drive() 
+{
+    frc::ChassisSpeeds speeds;
+    speeds.vx = 0_mps;
+    speeds.vy = 0_mps;
+    speeds.omega = units::degrees_per_second_t(0.0);
+    Drive(speeds);
+}
+void DifferentialChassis::Drive
+(
+    SwerveDriveState*           targetState
+)
+{
+    frc::ChassisSpeeds speeds;
+    speeds.vx = 0_mps;
+    speeds.vy = 0_mps;
+    speeds.omega = units::degrees_per_second_t(0.0);
+    if (targetState != nullptr)
+    {
+        auto move = targetState->GetChassisMovement();
+        speeds = move.chassisSpeeds;
+    }
+    Drive(speeds);
+}
+
 

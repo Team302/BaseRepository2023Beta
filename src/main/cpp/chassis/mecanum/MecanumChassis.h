@@ -75,6 +75,14 @@ class MecanumChassis : public IChassis
         void SetTargetHeading(units::angle::degree_t targetYaw) override;
         void SetEncodersToZero() override;
 
+        // next 3 need to be rationalized with IChassis
+        SwerveOdometry* GetOdometry() const override;
+        void Drive() override;
+        void Drive
+        (
+            SwerveDriveState*           targetState
+        );
+
     private:
         void ZeroEncoder(std::shared_ptr<IDragonMotorController> motor);
 

@@ -28,6 +28,7 @@
 #include <units/angle.h>
 
 #include <chassis/holonomic/FieldDriveUtils.h>
+#include <chassis/swerve/SwerveOdometry.h>
 #include <hw/factories/PigeonFactory.h>
 #include <hw/DragonPigeon.h>
 #include <utils/ConversionUtils.h>
@@ -170,4 +171,37 @@ void MecanumChassis::ZeroEncoder(shared_ptr<IDragonMotorController> controller)
         talon->SetSelectedSensorPosition(0,0);
     }
 }
+
+
+
+// next 3 need to be rationalized with IChassis
+SwerveOdometry* MecanumChassis::GetOdometry() const 
+{
+    return nullptr;
+}
+void MecanumChassis::Drive() 
+{
+    frc::ChassisSpeeds speeds;
+    speeds.vx = 0_mps;
+    speeds.vy = 0_mps;
+    speeds.omega = units::degrees_per_second_t(0.0);
+    Drive(speeds);
+}
+void MecanumChassis::Drive
+(
+    SwerveDriveState*           targetState
+)
+{
+    frc::ChassisSpeeds speeds;
+    speeds.vx = 0_mps;
+    speeds.vy = 0_mps;
+    speeds.omega = units::degrees_per_second_t(0.0);
+    if (targetState != nullptr)
+    {
+        auto move = targetState->GetChassisMovement();
+        speeds = move.chassisSpeeds;
+    }
+    Drive(speeds);
+}
+
 

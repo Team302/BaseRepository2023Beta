@@ -15,6 +15,7 @@
 #include <chassis/IChassis.h>
 #include <chassis/holonomic/HolonomicDrive.h>
 #include <chassis/mecanum/MecanumChassis.h>
+#include <hw/DragonLimelight.h>
 #include <mechanisms/StateMgrHelper.h>
 #include <RobotXmlParser.h>
 #include <TeleopControl.h>

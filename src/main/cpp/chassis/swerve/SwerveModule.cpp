@@ -230,6 +230,12 @@ void SwerveModule::ZeroAlignModule()
     SetTurnAngle(units::degree_t(0));
 }
 
+frc::SwerveModulePosition SwerveModule::GetPosition() const
+{
+    units::meter_t totalDistance = m_wheelDiameter * m_currentRotations;
+    return {totalDistance, frc::Rotation2d(units::angle::degree_t(m_turnSensor->GetPosition()))};
+}
+
 
 /// @brief Get the current state of the module (speed of the wheel and angle of the wheel)
 /// @returns SwerveModuleState
@@ -245,12 +251,6 @@ SwerveModuleState SwerveModule::GetState() const
     // Create the state and return it
     SwerveModuleState state{mps,angle};
     return state;
-}
-
-
-frc::SwerveModulePosition SwerveModule::GetPosition() const {
-  return {units::meter_t{0.0},
-          units::radian_t{0.0}};
 }
 
 

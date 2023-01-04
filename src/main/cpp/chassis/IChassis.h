@@ -30,6 +30,9 @@
 #include <mechanisms/controllers/ControlData.h>
 #include <mechanisms/controllers/ControlModes.h>
 
+#include <chassis/swerve/states/SwerveDriveState.h>
+#include <chassis/swerve/SwerveOdometry.h>
+
 // Third Party Includes
 
 
@@ -43,7 +46,7 @@ namespace frc
 ///  @brief	    Interface for differential drives
 class IChassis
 {
-	public:
+    public:
         enum CHASSIS_TYPE
         {
             DIFFERENTIAL, 
@@ -76,6 +79,7 @@ class IChassis
 
         /// @brief      Run chassis 
         /// @returns    void
+        virtual void Drive() = 0;
         virtual void Drive
         (
             frc::ChassisSpeeds  chassisSpeeds
@@ -92,6 +96,8 @@ class IChassis
         
 
         virtual void SetTargetHeading(units::angle::degree_t targetYaw) = 0;
+        /// @brief Drive the chassis
+        virtual void Drive(SwerveDriveState* targetState) = 0;
         
         virtual void Initialize() = 0;
 
@@ -102,6 +108,7 @@ class IChassis
         ) = 0;
 
         virtual void UpdateOdometry() = 0;
+        virtual SwerveOdometry* GetOdometry() const = 0;
         virtual units::length::inch_t GetWheelDiameter() const = 0;
         virtual units::length::inch_t GetTrack() const = 0;
         virtual units::velocity::meters_per_second_t GetMaxSpeed() const = 0;
@@ -109,8 +116,8 @@ class IChassis
         virtual units::angle::degree_t GetYaw() const = 0;
         virtual void SetEncodersToZero() = 0;
 
-	    IChassis() = default;
-	    virtual ~IChassis() = default;
+	IChassis() = default;
+	virtual ~IChassis() = default;
 };
 
 

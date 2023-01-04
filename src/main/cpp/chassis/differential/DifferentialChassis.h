@@ -27,6 +27,8 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/drive/DifferentialDrive.h>
 
+class SwerveOdometry;
+
 class DifferentialChassis : public IChassis {
 
     public:
@@ -70,6 +72,13 @@ class DifferentialChassis : public IChassis {
         void SetEncodersToZero() override;
 
 
+        // next 3 need to be rationalized with IChassis
+        SwerveOdometry* GetOdometry() const override;
+        void Drive() override;
+        void Drive
+        (
+            SwerveDriveState*           targetState
+        );
 
 
 

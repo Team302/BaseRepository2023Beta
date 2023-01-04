@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2022 Lake Orion Robotics FIRST Team 302
 //
@@ -15,40 +14,33 @@
 //====================================================================================================================================================
 
 #pragma once
+
+//C++ Includes
 #include <memory>
+#include <map>
 #include <string>
 
-#include <frc/BuiltInAccelerometer.h>
-#include <frc/estimator/SwerveDrivePoseEstimator.h>
+//FRC Includes
 #include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Rotation2d.h>
-#include <frc/geometry/Translation2d.h>
-#include <frc/kinematics/ChassisSpeeds.h>
-#include <frc/kinematics/SwerveDriveKinematics.h>
-#include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/kinematics/SwerveModuleState.h>
-
-#include <units/acceleration.h>
-#include <units/angle.h>
 #include <units/angular_acceleration.h>
-#include <units/angular_velocity.h>
-#include <units/length.h>
-#include <units/velocity.h>
 
-
-#include <chassis/DragonTargetFinder.h>
-#include <chassis/IChassis.h>
-#include <chassis/PoseEstimatorEnum.h>
+//Team302 Includes
+#include <chassis/swerve/states/SwerveDriveState.h>
+#include <chassis/swerve/SwerveOdometry.h>
+#include <chassis/swerve/ISwerveDriveOrientation.h>
+#include <chassis/swerve/SwerveEnums.h>
 #include <chassis/swerve/SwerveModule.h>
-#include <hw/DragonLimelight.h>
-#include <hw/DragonPigeon.h>
-#include <hw/factories/PigeonFactory.h>
+#include <chassis/IChassis.h>
+
+
 
 class SwerveChassis : public IChassis
 {
     public:
+        SwerveChassis() = delete;
+        virtual ~SwerveChassis() = default;
 
-        /// @brief Construct a swerve chassis
+        /// @brief Construct a SwerveChassis
         /// @param [in] std::shared_ptr<SwerveModule>           frontleft:          front left swerve module
         /// @param [in] std::shared_ptr<SwerveModule>           frontright:         front right swerve module
         /// @param [in] std::shared_ptr<SwerveModule>           backleft:           back left swerve module
@@ -60,15 +52,14 @@ class SwerveChassis : public IChassis
         /// @param [in] units::radians_per_second_t             maxAngularSpeed:    maximum rotation speed of the chassis 
         /// @param [in] double                                  maxAcceleration:    maximum acceleration in meters_per_second_squared
         SwerveChassis
-        ( 
-			std::shared_ptr<SwerveModule>                               frontLeft, 
+        (
+            std::shared_ptr<SwerveModule>                               frontLeft, 
 			std::shared_ptr<SwerveModule>                               frontRight,
 			std::shared_ptr<SwerveModule>                               backLeft, 
 			std::shared_ptr<SwerveModule>                               backRight, 
             units::length::inch_t                                       wheelDiameter,
 			units::length::inch_t                                       wheelBase,
 			units::length::inch_t                                       track,
-            double                                                      odometryComplianceCoefficient,
 			units::velocity::meters_per_second_t                        maxSpeed,
 			units::radians_per_second_t                                 maxAngularSpeed,
 			units::acceleration::meters_per_second_squared_t            maxAcceleration,
@@ -77,76 +68,20 @@ class SwerveChassis : public IChassis
             std::string                                                 controlFileName
         );
 
-	    ~SwerveChassis() noexcept override = default;
+        /// @brief Runs the current SwerveDriveState
+        void Drive() override;
 
+        /// @brief Initializes the targetState, updates the current SwerveDriveState
+        /// @param [in] SwerveDriveState    targetState - the new state that should be ran
+        void Drive(SwerveDriveState* targetState);
 
-        /// @brief Align all of the swerve modules to point forward
-        void ZeroAlignSwerveModules();
-
-        /// @brief Drive the chassis
-        /// @param [in] double  drivePercent:   forward/reverse percent output (positive is forward)
-        /// @param [in] double  steerPercent:   left/right percent output (positive is left)
-        /// @param [in] double  rotatePercent:  Rotation percent output around the vertical (Z) axis; (positive is counter clockwise)
-        /// @param [in] bool    fieldRelative:  true: movement is based on the field (e.g., push it goes away from the driver regardless of the robot orientation),
-        ///                                     false: direction is based on robot front/back
-        /// @param [in] bool    useTargetHeading:  true: constrain the heading based on the stored target heading,
-        ///                                     false: don't contrain the heading
-        void Drive
-        (
-            double drivePercent, 
-            double steerPercent, 
-            double rotatePercent, 
-            CHASSIS_DRIVE_MODE  mode,
-            HEADING_OPTION      headingOption
-        );
-
-        /// @brief Drive the chassis
-        /// @param [in] frc::ChassisSpeeds  speeds:         kinematics for how to move the chassis
-        /// @param [in] bool                fieldRelative:  true: movement is based on the field (e.g., push it goes away from the driver regardless of the robot orientation),
-        ///                                                 false: direction is based on robot front/back
-        /// @param [in] bool                useTargetHeading:  true: constrain the heading based on the stored target heading,
-        ///                                                 false: don't contrain the heading
-        void Drive
-        (
-            frc::ChassisSpeeds speeds, 
-            CHASSIS_DRIVE_MODE  mode,
-            HEADING_OPTION      headingOption
-        ) override;
-        void Drive
-        (
-            frc::ChassisSpeeds            chassisSpeeds
-        ) override;
-
-        /// @brief update the chassis odometry based on current states of the swerve modules and the pigeon
-        void UpdateOdometry();
-
-        /// @brief Provide the current chassis speed information
-        frc::ChassisSpeeds GetChassisSpeeds() const;
-
-        /// @brief Sets of the motor encoders to zero
+        /// @brief Set all the swerve module encoders to zero
         void SetEncodersToZero();
 
-        /// @brief Get encoder values
-        double GetEncoderValues(std::shared_ptr<SwerveModule> motor);
+        /// @brief Align the swerve modules to face "0" or forward
+        void ZeroAlignSwerveModules();
 
-        /// @brief Reset the current chassis pose based on the provided pose and rotation
-        /// @param [in] const Pose2d&       pose        Current XY position
-        /// @param [in] const Rotation2d&   angle       Current rotation angle
-        void ResetPose
-        ( 
-            const frc::Pose2d&       pose,
-            const frc::Rotation2d&   angle
-        );
-
-        /// @brief Reset the current chassis pose based on the provided pose (the rotation comes from the Pigeon)
-        /// @param [in] const Pose2d&       pose        Current XY position
-        void ResetPose
-        ( 
-            const frc::Pose2d&       pose
-        ) override;
-
-        //static constexpr auto MaxSpeed = 3.0_mps; 
-        //static constexpr units::angular_velocity::radians_per_second_t MaxAngularSpeed{wpi::numbers::pi};
+        /// Getters
 
         units::length::inch_t GetWheelDiameter() const {return m_wheelDiameter; }  
         units::length::inch_t GetWheelBase() const {return m_wheelBase; }  
@@ -158,143 +93,81 @@ class SwerveChassis : public IChassis
         std::shared_ptr<SwerveModule> GetFrontLeft() const { return m_frontLeft;}
         std::shared_ptr<SwerveModule> GetFrontRight() const { return m_frontRight;}
         std::shared_ptr<SwerveModule> GetBackLeft() const { return m_backLeft;}
-        std::shared_ptr<SwerveModule> GetBackRight() const { return m_backRight;}
-        //frc::SwerveDrivePoseEstimator<4> GetPoseEst() const { return m_poseEstimator; }  
-        frc::Pose2d GetPose() const;
-        units::angle::degree_t GetYaw() const override;
+        std::shared_ptr<SwerveModule> GetBackRight() const { return m_backRight;};
 
-        //Dummy functions for IChassis Implementation
         inline IChassis::CHASSIS_TYPE GetType() const override {return IChassis::CHASSIS_TYPE::SWERVE;};
         inline void Initialize() override {};
 
-        void RunWPIAlgorithm(bool runWPI ) { m_runWPI = runWPI; }
-        void SetPoseEstOption(PoseEstimatorEnum opt ) { m_poseOpt = opt; }
-        double GetodometryComplianceCoefficient() const { return m_odometryComplianceCoefficient; }
+        /// @brief Returns the current SwerveDriveState
+        /// @return SwerveDriveState* - current SwerveDriveState
+        SwerveDriveState* GetCurrentDriveState() const {return m_currentDriveState;};
+
+        /// @brief Get the specified SwerveDriveState
+        /// @return SwerveDriveState* - specified state
+        SwerveDriveState* GetDriveState(SwerveEnums::SwerveDriveStateType stateType);
+
+        /// @brief Get current estimated chassis position as Pose2d
+        /// @return frc::Pose2d - current chassis position
+        frc::Pose2d GetPose() const;
+
+        /// @brief Get SwerveOdometry
+        /// @return SwerveOdometry* - the chassis' odometry
+        SwerveOdometry* GetOdometry() const override {return m_odometry;};
+
+        /// @brief Set the current chassis position to the target pose
+        /// @param [in] frc::Pose2d pose - target pose
+        void ResetPose(const frc::Pose2d& pose) override;
+
+        /// @brief Update current estimated chassis position based on encoders and sensors
+        void UpdateOdometry();
+
+        /// @brief Get the current chassis orientation "state"
+        /// @return ISwerveDriveOrientation* - current orientation
+        ISwerveDriveOrientation* GetCurrentOrientation() const {return m_currentOrientation;};
+
+        /// @brief Get the specified chassis orientation "state"
+        /// @return ISwerveDriveOrientation* - specified orientation
+        ISwerveDriveOrientation* GetOrientation(SwerveEnums::HeadingOption orientationOption);
+
+        // need to rationalize the following from IChassis
+        void Drive
+        (
+            frc::ChassisSpeeds  chassisSpeeds
+        ) override;
+        void Drive
+        (
+            frc::ChassisSpeeds  chassisSpeeds,
+            CHASSIS_DRIVE_MODE  mode,
+            HEADING_OPTION      headingOption
+        ) override;
         void SetTargetHeading(units::angle::degree_t targetYaw) override;
-
-        void ReZero();
-
-        void DriveHoldPosition();
+        units::angle::degree_t GetYaw() const override;
 
     private:
-        frc::ChassisSpeeds GetFieldRelativeSpeeds
-        (
-            units::meters_per_second_t xSpeed,
-            units::meters_per_second_t ySpeed,
-            units::radians_per_second_t rot        
-        );
+        std::shared_ptr<SwerveModule>                                       m_frontLeft;
+        std::shared_ptr<SwerveModule>                                       m_frontRight;
+        std::shared_ptr<SwerveModule>                                       m_backLeft;
+        std::shared_ptr<SwerveModule>                                       m_backRight;
 
-        units::angular_velocity::degrees_per_second_t CalcHeadingCorrection
-        (
-            units::angle::degree_t  targetAngle,
-            double                  kP
-        );
+        units::length::inch_t                                               m_wheelDiameter;       
+        units::length::inch_t                                               m_wheelBase;       
+        units::length::inch_t                                               m_track;
+        units::velocity::meters_per_second_t                                m_maxSpeed;
+        units::radians_per_second_t                                         m_maxAngularSpeed;
+        units::acceleration::meters_per_second_squared_t                    m_maxAcceleration;
+        units::angular_acceleration::radians_per_second_squared_t           m_maxAngularAcceleration;
 
-        void CalcSwerveModuleStates
-        (
-            frc::ChassisSpeeds 
-        );
+        //Dont know if this and orientation should be vectors or maps, b/c of GetDriveState: I feel like they should be maps
+        //std::vector<SwerveDriveState*>          m_swerveDriveStates;
+        SwerveDriveState*                                                   m_currentDriveState;
 
-        void AdjustRotToMaintainHeading
-        (
-            units::meters_per_second_t&  xspeed,
-            units::meters_per_second_t&  yspeed,
-            units::radians_per_second_t& rot 
-        );        
+        std::map<SwerveEnums::SwerveDriveStateType, SwerveDriveState*> m_swerveDriveStates;
 
-        void AdjustRotToPointTowardGoal
-        (
-            frc::Pose2d                  robotPose,
-            units::radians_per_second_t& rot
-        );
+        //std::vector<ISwerveDriveOrientation*>   m_swerveOrientation;
+        std::map<SwerveEnums::HeadingOption, ISwerveDriveOrientation*>      m_swerveOrientation;
+        ISwerveDriveOrientation*                                            m_currentOrientation;
 
-        void DriveToPointTowardGoal
-        (
-            frc::Pose2d              robotPose,
-            frc::Pose2d              goalPose, 
-            units::meters_per_second_t&  xspeed,
-            units::meters_per_second_t&  yspeed,
-            units::radians_per_second_t& rot
-            
-        );
-        units::angle::degree_t UpdateForPolarDrive
-        (
-            frc::Pose2d              robotPose,
-            frc::Pose2d              goalPose,
-            frc::Transform2d       wheelLoc,
-            frc::ChassisSpeeds       speeds
-        );
-
-        std::shared_ptr<SwerveModule>                               m_frontLeft;
-        std::shared_ptr<SwerveModule>                               m_frontRight;
-        std::shared_ptr<SwerveModule>                               m_backLeft;
-        std::shared_ptr<SwerveModule>                               m_backRight;
-
-        frc::SwerveModuleState                                      m_flState;
-        frc::SwerveModuleState                                      m_frState;
-        frc::SwerveModuleState                                      m_blState;
-        frc::SwerveModuleState                                      m_brState;
-        
-        units::length::inch_t                                       m_wheelDiameter;       
-        units::length::inch_t                                       m_wheelBase;       
-        units::length::inch_t                                       m_track;
-        double                                                      m_odometryComplianceCoefficient;
-        units::velocity::meters_per_second_t                        m_maxSpeed;
-        units::radians_per_second_t                                 m_maxAngularSpeed;
-        units::acceleration::meters_per_second_squared_t            m_maxAcceleration;
-        units::angular_acceleration::radians_per_second_squared_t   m_maxAngularAcceleration;
-
-        DragonPigeon*                                               m_pigeon;
-        frc::BuiltInAccelerometer                                   m_accel;
-        bool                                                        m_runWPI;
-        PoseEstimatorEnum                                           m_poseOpt;
-        frc::Pose2d                                                 m_pose;
-        units::angle::degree_t                                      m_offsetPoseAngle;
-        units::velocity::meters_per_second_t                        m_drive;
-        units::velocity::meters_per_second_t                        m_steer;
-        units::angular_velocity::radians_per_second_t               m_rotate;
-
-        const double                                                m_deadband = 0.0;
-        const units::angular_velocity::radians_per_second_t         m_angularDeadband = units::angular_velocity::radians_per_second_t(0.00);
-        
-        frc::Translation2d m_frontLeftLocation{0.381_m, 0.381_m};
-        frc::Translation2d m_frontRightLocation{0.381_m, -0.381_m};
-        frc::Translation2d m_backLeftLocation{-0.381_m, 0.381_m};
-        frc::Translation2d m_backRightLocation{-0.381_m, -0.381_m};
-        frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, 
-                                                   m_frontRightLocation, 
-                                                   m_backLeftLocation, 
-                                                   m_backRightLocation};
-
-
-        // Gains are for example purposes only - must be determined for your own robot!
-        frc::SwerveDrivePoseEstimator<4> m_poseEstimator{ m_kinematics,
-                                                          frc::Rotation2d{},
-                                                          {m_frontLeft.get()->GetPosition(), m_frontRight.get()->GetPosition(), m_backLeft.get()->GetPosition(), m_backRight.get()->GetPosition()},
-                                                          frc::Pose2d(),
-                                                          {0.1, 0.1, 0.1},
-                                                          {0.1, 0.1, 0.1}};
-
-        const double kPMaintainHeadingControl = 1.5; //4.0, 3.0
-        const double kPAutonSpecifiedHeading = 3.0;  // 4.0
-        const double kPAutonGoalHeadingControl = 5.0;  // 2.0
-        const double kPGoalHeadingControl = 6.0; //10.0, 7.0
-        const double kPDistance = 10.0; //10.0, 7.0
-        const double kIHeadingControl = 0.0; //not being used
-        const double kDHeadingControl = 0.0; //not being used
-        const double kFHeadingControl = 0.0; //not being used
-        bool m_hold = false;
-        units::angle::degree_t m_storedYaw;
-        units::angular_velocity::degrees_per_second_t m_yawCorrection;
-
-        DragonTargetFinder m_targetFinder;
-        units::angle::degree_t m_targetHeading;
-        DragonLimelight*        m_limelight;
-
-        std::string             m_networkTableName;
-        std::string             m_controlFileName;
-
-        const units::length::inch_t m_shootingDistance = units::length::inch_t(105.0); // was 105.0
-
-
+        SwerveOdometry*                                                     m_odometry;
+        std::string                                                         m_networkTableName;
+        std::string                                                         m_controlFileName;
 };

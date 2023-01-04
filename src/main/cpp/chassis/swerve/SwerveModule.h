@@ -102,6 +102,8 @@ class SwerveModule
         /// @brief Get the current state of the module (speed of the wheel and angle of the wheel)
         /// @returns SwerveModuleState
         frc::SwerveModuleState GetState() const;
+        /// @brief Get the current position of the swerve module encoder counts
+        /// @return frc::SwerveModulePosition - current swerve module position
         frc::SwerveModulePosition GetPosition() const;
 
         /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)
