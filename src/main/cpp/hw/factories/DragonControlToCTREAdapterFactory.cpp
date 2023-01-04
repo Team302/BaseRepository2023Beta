@@ -31,6 +31,7 @@
 #include <hw/ctreadapters/DragonPercentOutputToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPositionDegreeToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPositionInchToCTREAdapter.h>
+#include <hw/ctreadapters/DragonTicksToCTREAdapter.h>
 #include <hw/ctreadapters/DragonTrapezoidToCTREAdapter.h>
 #include <hw/ctreadapters/DragonVelocityDegreeToCTREAdapter.h>
 #include <hw/ctreadapters/DragonVelocityInchToCTREAdapter.h>
@@ -95,6 +96,7 @@ DragonControlToCTREAdapter* DragonControlToCTREAdapterFactory::CreateAdapter
                 break;
 
 			case ControlModes::CONTROL_TYPE::POSITION_ABSOLUTE:
+                return new DragonTicksToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
                 break;
 
 			case ControlModes::CONTROL_TYPE::POSITION_DEGREES:
@@ -139,7 +141,7 @@ DragonControlToCTREAdapter* DragonControlToCTREAdapterFactory::CreateAdapter
                 break;
 
 			default:
-                string msg{"Invalid contrrol data "};
+                string msg{"Invalid control data "};
                 msg += to_string(controller->GetDeviceID());
 				Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCTREAdapterFactory"), string("CreateAdapter"), msg);
                 return new DragonPercentOutputToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);

@@ -71,7 +71,8 @@ SwerveModule::SwerveModule
     double                                                      turnNominalVal,
     double                                                      turnPeakVal,
     double                                                      turnMaxAcc,
-    double                                                      turnCruiseVel
+    double                                                      turnCruiseVel,
+    double                                                      countsOnTurnEncoderPerDegreesOnAngleSensor
 ) : m_type(type), 
     m_driveMotor(driveMotor), 
     m_turnMotor(turnMotor), 
@@ -90,7 +91,6 @@ SwerveModule::SwerveModule
                                                 turnCruiseVel,
                                                 turnPeakVal,
                                                 turnNominalVal)),
-    m_turnPercentControlData(new ControlData()),
     m_wheelDiameter(0.0),
     m_nt(),
     m_activeState(),
@@ -98,10 +98,12 @@ SwerveModule::SwerveModule
     m_currentSpeed(0.0_rpm),
     m_currentRotations(0.0),
     m_maxVelocity(1_mps),
-    m_runClosedLoopDrive(false)
+    m_runClosedLoopDrive(false),
+    m_countsOnTurnEncoderPerDegreesOnAngleSensor(countsOnTurnEncoderPerDegreesOnAngleSensor)
 {
     driveMotor.get()->SetFramePeriodPriority(IDragonMotorController::MOTOR_PRIORITY::HIGH);
     turnMotor.get()->SetFramePeriodPriority(IDragonMotorController::MOTOR_PRIORITY::HIGH);
+    turnMotor.get()->SetControlConstants(0, m_turnPositionControlData);
 
     Rotation2d ang { units::angle::degree_t(0.0)};
     m_activeState.angle = ang;
@@ -133,7 +135,7 @@ SwerveModule::SwerveModule
     auto turnMotorSensors = fx->GetSensorCollection();
     turnMotorSensors.SetIntegratedSensorPosition(0, 0);
 
-    m_turnMotor.get()->SetControlConstants(0, m_turnPositionControlData);
+    //m_turnMotor.get()->SetControlConstants(0, m_turnPositionControlData);
 
     switch ( GetType() )
     {
@@ -195,11 +197,7 @@ void SwerveModule::Init
                                                     maxVelocity.to<double>(),
                                                     maxVelocity.to<double>(),
                                                     0.0 );
-    if (m_runClosedLoopDrive)
-    {
-        m_driveMotor.get()->SetControlConstants(0, m_driveVelocityControlData);
-    }
-
+    m_driveMotor.get()->SetControlConstants(0, m_runClosedLoopDrive ? m_driveVelocityControlData : m_drivePercentControlData);
     //auto trans = Transform2d(offsetFromCenterOfRobot, Rotation2d() );
     //m_currentPose = m_currentPose + trans;
 }
@@ -391,10 +389,8 @@ void SwerveModule::SetTurnAngle( units::angle::degree_t targetAngle )
         auto motor = m_turnMotor.get()->GetSpeedController();
         auto fx = dynamic_cast<WPI_TalonFX*>(motor.get());
         auto sensors = fx->GetSensorCollection();
-        //=============================================================================
-        // 5592 counts on the falcon for 76.729 degree change on the CANCoder (wheel)
-        //=============================================================================
-        double deltaTicks = (deltaAngle.to<double>() * 5592 / 76.729); 
+        auto deltaTicks = m_countsOnTurnEncoderPerDegreesOnAngleSensor * deltaAngle.to<double>();
+
         double currentTicks = sensors.GetIntegratedSensorPosition();
         double desiredTicks = currentTicks + deltaTicks;
 
@@ -402,15 +398,8 @@ void SwerveModule::SetTurnAngle( units::angle::degree_t targetAngle )
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("deltaTicks"), deltaTicks );
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("desiredTicks"), desiredTicks );
 
-        m_turnMotor.get()->SetControlConstants(0, m_turnPositionControlData);
         m_turnMotor.get()->Set(desiredTicks);
     }
-    else
-    {
-        m_turnMotor.get()->SetControlConstants(0, m_turnPercentControlData);
-        m_turnMotor.get()->Set(0.0);
-    }
-
 }
 
 /// @brief stop the drive and turn motors

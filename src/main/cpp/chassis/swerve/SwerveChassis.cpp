@@ -36,7 +36,6 @@
 // Team 302 includes
 #include <chassis/PoseEstimatorEnum.h>
 #include <chassis/swerve/SwerveChassis.h>
-#include <TeleopControl.h>
 #include <hw/DragonLimelight.h>
 #include <hw/factories/LimelightFactory.h>
 #include <utils/AngleUtils.h>
@@ -46,9 +45,15 @@
 // Third Party Includes
 #include <ctre/phoenix/sensors/CANCoder.h>
 
+using std::shared_ptr;
+using std::string;
 
-using namespace std;
-using namespace frc;
+using frc::BuiltInAccelerometer;
+using frc::ChassisSpeeds;
+using frc::Pose2d;
+using frc::Rotation2d;
+using frc::Transform2d;
+
 
 /// @brief Construct a swerve chassis
 /// @param [in] std::shared_ptr<SwerveModule>           frontleft:          front left swerve module
@@ -73,7 +78,9 @@ SwerveChassis::SwerveChassis
     units::velocity::meters_per_second_t                        maxSpeed,
     units::radians_per_second_t                                 maxAngularSpeed,
     units::acceleration::meters_per_second_squared_t            maxAcceleration,
-    units::angular_acceleration::radians_per_second_squared_t   maxAngularAcceleration
+    units::angular_acceleration::radians_per_second_squared_t   maxAngularAcceleration,
+    string                                                      networkTableName,
+    string                                                      controlFileName
 ) : m_frontLeft(frontLeft), 
     m_frontRight(frontRight), 
     m_backLeft(backLeft), 
@@ -96,7 +103,6 @@ SwerveChassis::SwerveChassis
     m_poseOpt(PoseEstimatorEnum::WPI),
     m_pose(),
     m_offsetPoseAngle(0_deg),  //not used at the moment
-    //m_timer(),
     m_drive(units::velocity::meters_per_second_t(0.0)),
     m_steer(units::velocity::meters_per_second_t(0.0)),
     m_rotate(units::angular_velocity::radians_per_second_t(0.0)),
@@ -107,11 +113,10 @@ SwerveChassis::SwerveChassis
     m_storedYaw(m_pigeon->GetYaw()),
     m_yawCorrection(units::angular_velocity::degrees_per_second_t(0.0)),
     m_targetHeading(units::angle::degree_t(0)),
-    m_limelight(LimelightFactory::GetLimelightFactory()->GetLimelight())
+    m_limelight(LimelightFactory::GetLimelightFactory()->GetLimelight()),
+    m_networkTableName(networkTableName),
+    m_controlFileName(controlFileName)
 {
-    //m_timer.Reset();
-    //m_timer.Start();
-
     frontLeft.get()->Init( wheelDiameter, maxSpeed, maxAngularSpeed, maxAcceleration, maxAngularAcceleration, m_frontLeftLocation );
     frontRight.get()->Init( wheelDiameter, maxSpeed, maxAngularSpeed, maxAcceleration, maxAngularAcceleration, m_frontRightLocation );
     backLeft.get()->Init( wheelDiameter, maxSpeed, maxAngularSpeed, maxAcceleration, maxAngularAcceleration, m_backLeftLocation );

@@ -68,11 +68,10 @@ DragonFalcon::DragonFalcon
 	m_networkTableName += string(" - motor ");
 	m_networkTableName += to_string(deviceID);
 
-	m_controller[0] = DragonControlToCTREAdapterFactory::GetFactory()->CreatePercentOuptutAdapter(networkTableName, m_talon.get());
-	m_controller[0]->InitializeDefaults();
 	for (auto i=1; i<4; ++i)
 	{
-		m_controller[i] = m_controller[0];
+		m_controller[i] = DragonControlToCTREAdapterFactory::GetFactory()->CreatePercentOuptutAdapter(networkTableName, m_talon.get());
+		m_controller[i]->InitializeDefaults();
 	}
 	auto prompt = string("CTRE CAN motor controller ");
 	prompt += to_string(deviceID);

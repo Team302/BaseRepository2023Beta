@@ -73,7 +73,8 @@ class SwerveModule
                       double                                                    turnNominalPos,
                       double                                                    turnNominalNeg,
                       double                                                    turnMaxAcc,
-                      double                                                    turnCruiseVel
+                      double                                                    turnCruiseVel,
+                      double                                                    countsOnTurnEncoderPerDegreesOnAngleSensor
                     );
 
         void Init
@@ -149,7 +150,6 @@ class SwerveModule
         ControlData*                                        m_driveVelocityControlData;
         ControlData*                                        m_drivePercentControlData;
         ControlData*                                        m_turnPositionControlData;
-        ControlData*                                        m_turnPercentControlData;
 
 
         units::length::inch_t                               m_wheelDiameter;
@@ -163,4 +163,5 @@ class SwerveModule
 
         units::velocity::meters_per_second_t                m_maxVelocity;
         bool                                                m_runClosedLoopDrive;
+        double                                              m_countsOnTurnEncoderPerDegreesOnAngleSensor;
 };
