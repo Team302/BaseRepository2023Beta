@@ -16,8 +16,8 @@
 
 #pragma once
 #include <memory>
+#include <string>
 
-//#include <frc/AnalogGyro.h>
 #include <frc/BuiltInAccelerometer.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
@@ -27,7 +27,6 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
-//#include <frc/Timer.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -73,7 +72,9 @@ class SwerveChassis : public IChassis
 			units::velocity::meters_per_second_t                        maxSpeed,
 			units::radians_per_second_t                                 maxAngularSpeed,
 			units::acceleration::meters_per_second_squared_t            maxAcceleration,
-			units::angular_acceleration::radians_per_second_squared_t   maxAngularAcceleration
+			units::angular_acceleration::radians_per_second_squared_t   maxAngularAcceleration,
+            std::string                                                 networkTableName,
+            std::string                                                 controlFileName
         );
 
 	    ~SwerveChassis() noexcept override = default;
@@ -249,7 +250,6 @@ class SwerveChassis : public IChassis
         PoseEstimatorEnum                                           m_poseOpt;
         frc::Pose2d                                                 m_pose;
         units::angle::degree_t                                      m_offsetPoseAngle;
-        //frc::Timer                                                  m_timer;
         units::velocity::meters_per_second_t                        m_drive;
         units::velocity::meters_per_second_t                        m_steer;
         units::angular_velocity::radians_per_second_t               m_rotate;
@@ -290,6 +290,9 @@ class SwerveChassis : public IChassis
         DragonTargetFinder m_targetFinder;
         units::angle::degree_t m_targetHeading;
         DragonLimelight*        m_limelight;
+
+        std::string             m_networkTableName;
+        std::string             m_controlFileName;
 
         const units::length::inch_t m_shootingDistance = units::length::inch_t(105.0); // was 105.0
 

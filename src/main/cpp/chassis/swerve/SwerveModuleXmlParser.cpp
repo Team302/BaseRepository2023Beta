@@ -72,6 +72,7 @@ std::shared_ptr<SwerveModule> SwerveModuleXmlParser::ParseXML
     double turnPeakVal = 1.0;
     double turnMaxAcc = 0.0;
     double turnCruiseVel = 0.0;
+    double countsOnTurnEncoderPerDegreesOnAngleSensor = 1.0;
     auto networkTableName = baseNetworkTableName;
 
     // process attributes
@@ -141,6 +142,10 @@ std::shared_ptr<SwerveModule> SwerveModuleXmlParser::ParseXML
         {
         	turnCruiseVel = attr.as_double();
         }
+        else if (attrName.compare("countsOnTurnEncoderPerDegreesOnAngleSensor") == 0)
+        {
+            countsOnTurnEncoderPerDegreesOnAngleSensor = attr.as_double();
+        }
         else   // log errors
         {
             string msg = "unknown attribute ";
@@ -196,7 +201,8 @@ std::shared_ptr<SwerveModule> SwerveModuleXmlParser::ParseXML
                                                                          turnNominalVal,
                                                                          turnPeakVal,
                                                                          turnMaxAcc,
-                                                                         turnCruiseVel );
+                                                                         turnCruiseVel,
+                                                                         countsOnTurnEncoderPerDegreesOnAngleSensor );
     }
     return module;
 }

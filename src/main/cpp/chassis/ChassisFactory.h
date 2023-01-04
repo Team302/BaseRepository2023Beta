@@ -109,7 +109,8 @@ class ChassisFactory
 				double                                                      turnNominalVal,
 				double                                                      turnPeakVal,
 				double                                                      turnMaxAcc,
-				double                                                      turnCruiseVel
+				double                                                      turnCruiseVel,
+				double														countsOnTurnEncoderPerDegreesOnAngleSensor
 			);
 			std::shared_ptr<SwerveModule>	GetLeftFrontSwerveModule() { return m_leftFront; }
 			std::shared_ptr<SwerveModule> GetLeftBackSwerveModule() { return m_leftBack; }

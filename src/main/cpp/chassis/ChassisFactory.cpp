@@ -129,12 +129,12 @@ IChassis* ChassisFactory::CreateChassis
                                           maxVelocity, 
                                           maxAngularSpeed, 
                                           maxAcceleration,
-                                          maxAngularAcceleration
+                                          maxAngularAcceleration,
                                           //poseEstOption, 
-                                          //networkTableName,
-                                          //controlFileName
+                                          networkTableName,
+                                          controlFileName
                                           );
-            m_chassis = m_mecanum;
+            m_chassis = m_swerve;
         }
         break;
 
@@ -192,7 +192,8 @@ std::shared_ptr<SwerveModule> ChassisFactory::CreateSwerveModule
     double                                                      turnNominalVal,
     double                                                      turnPeakVal,
     double                                                      turnMaxAcc,
-    double                                                      turnCruiseVel
+    double                                                      turnCruiseVel,
+    double                                                      countsOnTurnEncoderPerDegreesOnAngleSensor
 )
 {
     std::shared_ptr<SwerveModule> swerve = nullptr;
@@ -215,7 +216,8 @@ std::shared_ptr<SwerveModule> ChassisFactory::CreateSwerveModule
                                                         turnNominalVal,
                                                         turnPeakVal,
                                                         turnMaxAcc,
-                                                        turnCruiseVel );
+                                                        turnCruiseVel,
+                                                        countsOnTurnEncoderPerDegreesOnAngleSensor );
             }
             swerve = m_leftFront;
             break;
@@ -234,7 +236,8 @@ std::shared_ptr<SwerveModule> ChassisFactory::CreateSwerveModule
                                                         turnNominalVal,
                                                         turnPeakVal,
                                                         turnMaxAcc,
-                                                        turnCruiseVel );
+                                                        turnCruiseVel,
+                                                        countsOnTurnEncoderPerDegreesOnAngleSensor );
             }
             swerve = m_leftBack;
 
@@ -254,7 +257,8 @@ std::shared_ptr<SwerveModule> ChassisFactory::CreateSwerveModule
                                                          turnNominalVal,
                                                          turnPeakVal,
                                                          turnMaxAcc,
-                                                         turnCruiseVel );
+                                                         turnCruiseVel,
+                                                         countsOnTurnEncoderPerDegreesOnAngleSensor );
            }
             swerve = m_rightFront;
             break;
@@ -273,7 +277,8 @@ std::shared_ptr<SwerveModule> ChassisFactory::CreateSwerveModule
                                                         turnNominalVal,
                                                         turnPeakVal,
                                                         turnMaxAcc,
-                                                        turnCruiseVel );
+                                                        turnCruiseVel,
+                                                        countsOnTurnEncoderPerDegreesOnAngleSensor );
             }            
             swerve = m_rightBack;
             break;

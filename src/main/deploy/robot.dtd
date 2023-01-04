@@ -153,30 +153,34 @@
 
 <!ELEMENT swervemodule (motor*, cancoder?)>
 <!ATTLIST swervemodule 
-          type              (LEFT_FRONT | RIGHT_FRONT | LEFT_BACK | RIGHT_BACK ) "LEFT_FRONT"
-          turn_p            CDATA "0.0"
-          turn_i            CDATA "0.0"
-          turn_d            CDATA "0.0"
-          turn_f            CDATA "0.0"
-          turn_nominal_val  CDATA "0.0"
-          turn_peak_val     CDATA "1.0"
-          turn_max_acc      CDATA "0.0"
-          turn_cruise_vel   CDATA "0.0"
+          type                                              (LEFT_FRONT | RIGHT_FRONT | LEFT_BACK | RIGHT_BACK ) "LEFT_FRONT"
+          turn_p                                            CDATA "0.0"
+          turn_i                                            CDATA "0.0"
+          turn_d                                            CDATA "0.0"
+          turn_f                                            CDATA "0.0"
+          turn_nominal_val                                  CDATA "0.0"
+          turn_peak_val                                     CDATA "1.0"
+          turn_max_acc                                      CDATA "0.0"
+          turn_cruise_vel                                   CDATA "0.0",
+          countsOnTurnEncoderPerDegreesOnAngleSensor        CDATA "1.0"
 >
 
 <!-- ========================================================================================================================================== -->
 <!--	mechanism  																																-->
+<!--    see MechanismTypes::MechanismTypes() for the valid mechanism type strings                                                               -->
 <!-- ========================================================================================================================================== -->
 <!ELEMENT mechanism (motor*, solenoid*, servo*, analogInput*, digitalInput*, cancoder*, colorsensor?)>
 <!ATTLIST mechanism
-          type              (INTAKE | ARM | RELEASE | FLAGARM | EXAMPLE) "INTAKE"
+          type              CDATA #REQUIRED
           networkTable      CDATA #IMPLIED
           controlFile       CDATA #IMPLIED
 >
 
+<!-- Solenoids -->
+<!-- See SolenoidUsage.cpp for the valid usage strings -->
 <!ELEMENT solenoid EMPTY >
 <!ATTLIST solenoid 
-		  usage 			( INTAKE | INTAKE2 | ARM | EXAMPLE ) "INTAKE"
+		  usage 			CDATA #REQUIRED
           canId             (  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 
                               10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 
                               20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 
@@ -187,9 +191,11 @@
           channel           (  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 ) "0"
           reversed          (true | false ) "false"
 >
+<!-- Servos -->
+<!-- see ServoUsage.cpp for the valid strings for usage -->
 <!ELEMENT servo EMPTY>
 <!ATTLIST servo 
-          usage             (  RELEASE_SERVO | RELEASE_SERVO2 | FLAG_SERVO ) "RELEASE_SERVO"
+          usage             CDATA #REQUIRED
           pwmId             (  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 
                               10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 ) "0"
           minAngle			CDATA "0.0"
@@ -207,14 +213,10 @@
 <!-- ========================================================================================================================================== -->
 
 <!-- motor  -->
+<!-- See MotorControllerUsage.cpp for valid usage strings -->
 <!ELEMENT motor (digitalInput*)>
 <!ATTLIST motor 
-          usage             	    ( SWERVE_DRIVE | SWERVE_TURN |
-                                      DIFFERENTIAL_LEFT_MAIN  | DIFFERENTIAL_LEFT_FOLLOWER  |
-                                      DIFFERENTIAL_RIGHT_MAIN | DIFFERENTIAL_RIGHT_FOLLOWER |
-                                      MECANUM_LEFT_FRONT | MECANUM_LEFT_BACK | MECANUM_RIGHT_FRONT | MECANUM_RIGHT_BACK |
-                                      EXAMPLE | INTAKE | INTAKE_TRANSFER | 
-                                      ARM  ) "ARM"
+          usage             	    CDATA #REQUIRED
           canId             		(  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 
                               		  10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 
                               		  20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 
@@ -260,13 +262,10 @@
 >
 
 <!-- digitalInput  -->
+<!-- See DigitalInputUsage.cpp for valid strings for usage -->
 <!ELEMENT digitalInput EMPTY>
 <!ATTLIST digitalInput 
-          usage             ( INTAKE_OUT | INTAKE_IN |
-                              BALL_PRESENT | 
-                              BALL_TRANSFER_FORWARD | BALL_TRANSFER_BACK |
-                              SHOOTER_HOOD_MIN | SHOOTER_HOOD_MAX |
-                              CLIMBER_BACK | CLIMBER_FORWARD ) "BALL_PRESENT"
+          usage             CDATA #REQUIRED
           digitalId         (  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 
                               10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 
                               20 | 21 | 22 | 23 | 24 | 25 ) "0"
