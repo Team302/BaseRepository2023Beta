@@ -23,7 +23,7 @@ class AdjustableItem
         virtual ~AdjustableItem() = default;
 
         /// @brief Set values based on network table values
-        virtual void SetParameters() = 0;
+        virtual void SetValues() = 0;
 
         /// @brief Get values from AdjustableItem
         virtual void GetValues() = 0;
