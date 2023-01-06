@@ -34,9 +34,10 @@ AdjustableItemMgr* AdjustableItemMgr::GetInstance()
 }
 
 /// @brief
-AdjustableItemMgr::AdjustableItemMgr() : m_adjustableItems()
+AdjustableItemMgr::AdjustableItemMgr() : m_adjustableItems(),
+                                         m_enabled(false)
 {
-    frc::Shuffleboard::GetTab("Tuning").Add("Enable Live Tuning?", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+    m_enableButton = frc::Shuffleboard::GetTab("Tuning").Add("Enable Live Tuning", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
 }
 
 void AdjustableItemMgr::RegisterAdjustableItem
@@ -50,10 +51,17 @@ void AdjustableItemMgr::RegisterAdjustableItem
 void AdjustableItemMgr::ListenForUpdates()
 {
     //check for button state changes
-    //if(...)
-    //{
-    //PopulateNetworkTables();
-    //}
+    if(m_enableButton->GetBoolean(false))
+    {
+        //Populate wiht all adjustable items
+        PopulateNetworkTables();
+
+        //Add other buttons onto dashboard
+        frc::Shuffleboard::GetTab("Tuning").Add("Submit Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        frc::Shuffleboard::GetTab("Tuning").Add("Reset Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        frc::Shuffleboard::GetTab("Tuning").Add("Show Differences", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        m_enableButton->SetBoolean(false);
+    }
 }
 
 std::vector<AdjustableItem*> AdjustableItemMgr::CheckForDifferences()
@@ -68,4 +76,9 @@ std::vector<AdjustableItem*> AdjustableItemMgr::CheckForDifferences()
     }
 
     return itemsWithDiffs;
+}
+
+void AdjustableItemMgr::PopulateNetworkTables()
+{
+
 }

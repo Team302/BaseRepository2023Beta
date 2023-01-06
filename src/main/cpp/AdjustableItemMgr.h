@@ -14,7 +14,12 @@
 //====================================================================================================================================================
 
 #pragma once
+
+//C++ Includes
 #include <vector>
+
+//FRC Includes
+#include <networktables/GenericEntry.h>
 
 #include <AdjustableItem.h>
 
@@ -47,4 +52,8 @@ class AdjustableItemMgr
         std::vector<AdjustableItem*>    m_adjustableItems;
 
         static AdjustableItemMgr*   m_instance;
+
+        bool                        m_enabled;
+
+        nt::GenericEntry*            m_enableButton;
 };
