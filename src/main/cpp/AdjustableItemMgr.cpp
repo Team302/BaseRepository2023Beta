@@ -80,5 +80,8 @@ std::vector<AdjustableItem*> AdjustableItemMgr::CheckForDifferences()
 
 void AdjustableItemMgr::PopulateNetworkTables()
 {
-
+    for(auto item: m_adjustableItems)
+    {
+        item->PopulateNetworkTable();
+    }
 }
