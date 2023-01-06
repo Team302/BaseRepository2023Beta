@@ -28,6 +28,10 @@ class AdjustableItem
         /// @brief Get values from AdjustableItem
         virtual void GetValues() = 0;
 
-        /// @brief Show the differences between xml/default values and network table values
+        /// @brief Return if there are differences between xml/default values and network table values
+        /// @return bool - item has differences
         virtual bool HasDifferences() = 0;
+
+        /// @brief Add adjustable values onto networktable (under the name from xml plus "-Tuner")
+        virtual void PopulateNetworkTable() = 0;
 };

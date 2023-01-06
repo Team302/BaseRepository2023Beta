@@ -16,6 +16,9 @@
 //C++ Includes
 #include <vector>
 
+//FRC Includes
+#include <frc/shuffleboard/Shuffleboard.h>
+
 //Team 302 Includes
 #include <AdjustableItem.h>
 #include <AdjustableItemMgr.h>
@@ -33,7 +36,7 @@ AdjustableItemMgr* AdjustableItemMgr::GetInstance()
 /// @brief
 AdjustableItemMgr::AdjustableItemMgr() : m_adjustableItems()
 {
-
+    frc::Shuffleboard::GetTab("Tuning").Add("Enable Live Tuning?", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
 }
 
 void AdjustableItemMgr::RegisterAdjustableItem
