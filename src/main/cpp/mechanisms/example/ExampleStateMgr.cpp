@@ -108,3 +108,23 @@ int ExampleStateMgr::GetCurrentStateParam
     // normally get the state from primitive params
     return StateMgr::GetCurrentStateParam(currentParams);
 }
+
+void ExampleStateMgr::SetValues()
+{
+
+}
+
+void ExampleStateMgr::GetValues()
+{
+    
+}
+
+bool ExampleStateMgr::HasDifferences()
+{
+    
+}
+
+void ExampleStateMgr::PopulateNetworkTable()
+{
+    
+}

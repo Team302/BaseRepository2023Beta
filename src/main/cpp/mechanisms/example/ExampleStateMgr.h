@@ -24,10 +24,11 @@
 #include <mechanisms/base/StateMgr.h>
 #include <mechanisms/example/Example.h>
 #include <mechanisms/StateStruc.h>
+#include <AdjustableItem.h>
 
 // Third Party Includes
 
-class ExampleStateMgr : public StateMgr
+class ExampleStateMgr : public StateMgr, public AdjustableItem
 {
     public:
         /// @enum the various states of the Intake
@@ -60,6 +61,15 @@ class ExampleStateMgr : public StateMgr
         ) override;
 
         void CheckForStateTransition() override;
+
+        //Adjustable Item Overrides
+        void SetValues() override;
+
+        void GetValues() override;
+
+        bool HasDifferences() override;
+        
+        void PopulateNetworkTable() override;
     private:
 
         ExampleStateMgr();
