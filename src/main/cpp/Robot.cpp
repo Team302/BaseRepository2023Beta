@@ -22,6 +22,7 @@
 #include <utils/LoggerData.h>
 #include <utils/LoggerEnums.h>
 #include <LoggableItemMgr.h>
+#include <AdjustableItemMgr.h>
 
 using namespace std;
 
@@ -36,6 +37,9 @@ void Robot::RobotInit()
     // Read the XML file to build the robot 
     auto XmlParser = new RobotXmlParser();
     XmlParser->ParseXML();
+
+    //Get AdjustableItemMgr instance
+    m_tuner = AdjustableItemMgr::GetInstance();
 
     auto factory = ChassisFactory::GetChassisFactory();
     m_chassis = factory->GetIChassis();
@@ -82,6 +86,8 @@ void Robot::RobotPeriodic()
         LoggableItemMgr::GetInstance()->LogData();
         Logger::GetLogger()->PeriodicLog();
     }
+
+    m_tuner->ListenForUpdates();
 }
 
 /**
