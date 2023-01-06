@@ -7,6 +7,33 @@
                usage="CENTER_OF_ROTATION"  
                type="pigeon2"  
                rotation="0.0"/>  
+
+<!--EXAMPLE MECHANISM-->
+       <mechanism type="EXAMPLE"
+              networkTable="ExampleNT"
+              controlFile="example.xml">
+       <motor  usage="EXAMPLE" 
+                    canId="1" 
+                    pdpID="1" 
+                    type="FALCON" 
+                    inverted="true" 
+                    sensorInverted="false" 
+                    feedbackDevice="INTERNAL" 
+                    countsPerRev="2048" 
+                    gearRatio="8.55" 
+                    brakeMode="true" 
+                    follow="-1" 
+                    peakCurrentDuration="25.0" 
+                    continuousCurrentLimit="20.0" 
+                    peakCurrentLimit="25.0" 
+                    currentLimiting="true"  
+                    forwardlimitswitch="false" 
+                    forwardlimitswitchopen="true" 
+                    reverselimitswitch="false" 
+                    reverselimitswitchopen="true" 
+                    voltageCompensationSaturation="10.0" 
+                   voltageCompensationEnable="true"/> 
+       </mechanism>
   
  <!-- ====================================================  
      Chassis  

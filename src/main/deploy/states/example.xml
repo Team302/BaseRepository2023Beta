@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE statedata SYSTEM "stateData.dtd">
+<statedata>
+	<controlData identifier="openloop" 
+	             mode="PERCENT_OUTPUT"/>
+    <mechanismTarget stateIdentifier="OFF"
+	                 controlDataIdentifier="openloop"
+	                 controlDataIdentifier2="openloop"
+					 value="0.0"
+					 secondValue="0.0"/>
+	<mechanismTarget stateIdentifier="FORWARD"
+	                 controlDataIdentifier="openloop"
+	                 controlDataIdentifier2="openloop"
+					 value="0.0"
+					 secondValue="0.0"/>
+	<mechanismTarget stateIdentifier="REVERSE"
+	                 controlDataIdentifier="openloop"
+	                 controlDataIdentifier2="openloop"
+					 value="1.0"
+					 secondValue="-1.0"/>
+</statedata>
