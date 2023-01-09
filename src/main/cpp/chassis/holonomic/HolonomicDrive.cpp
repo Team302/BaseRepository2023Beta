@@ -25,6 +25,7 @@
 
 // Team 302 Includes
 #include <chassis/holonomic/HolonomicDrive.h>
+#include <chassis/swerve/SwerveChassis.h>
 #include <chassis/IChassis.h>
 #include <hw/DragonPigeon.h>
 #include <gamepad/IDragonGamePad.h>
@@ -114,7 +115,34 @@ void HolonomicDrive::Run()
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("HolonomicDrive"), string("Run"), string("axis read"));
 
         ChassisSpeeds speeds{forward*maxSpeed, strafe*maxSpeed, rotate*maxAngSpeed};
-        m_chassis->Drive(speeds, mode, headingOpt);
+        if (m_chassis->GetType() == ChassisFactory::CHASSIS_TYPE::MECANUM_CHASSIS)
+        {
+            m_chassis->Drive(speeds, mode, headingOpt);
+        }
+        else
+        {
+            auto swerveChassis = dynamic_cast<SwerveChassis*>(m_chassis);
+            if (swerveChassis != nullptr)
+            {
+                SwerveEnums::SwerveDriveStateType mode = SwerveEnums::SwerveDriveStateType::FIELD_DRIVE;
+                SwerveEnums::HeadingOption headingOpt = SwerveEnums::HeadingOption::MAINTAIN;
+                SwerveDriveState* targetState = swerveChassis->GetDriveState(mode);
+                ISwerveDriveOrientation* targetOrientation = swerveChassis->GetOrientation(headingOpt);
+                SwerveEnums::NoMovementOption stopOption = SwerveEnums::NoMovementOption::STOP;
+            
+                //Convert all values into a ChassisMovement struct
+                ChassisMovement chassisMovement = { speeds, 
+                                                    frc::Trajectory(), 
+                                                    Point2d(),
+                                                    stopOption,
+                                                    SwerveEnums::AutonControllerType::HOLONOMIC};
+
+                targetState->UpdateChassisMovement(chassisMovement);
+                targetState->UpdateOrientationOption(targetOrientation);
+
+                m_chassis->Drive(targetState);
+            }
+        }
     }
     else
     {
