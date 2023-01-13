@@ -111,7 +111,9 @@ int ExampleStateMgr::GetCurrentStateParam
 
 void ExampleStateMgr::SetValues()
 {
-
+    std::vector<State*> states = GetStateVector();
+    ExampleState* state = (ExampleState*)states[0];
+    //state->SetTarget(new value from network table);
 }
 
 void ExampleStateMgr::GetValues()
@@ -121,7 +123,7 @@ void ExampleStateMgr::GetValues()
 
 bool ExampleStateMgr::HasDifferences()
 {
-    
+    return true;
 }
 
 void ExampleStateMgr::PopulateNetworkTable()

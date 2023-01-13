@@ -80,6 +80,8 @@ class StateMgr : public LoggableItem
         virtual void CheckForSensorTransitions();
         virtual void CheckForGamepadTransitions();
 
+        std::vector<State*> GetStateVector() { return m_stateVector;};
+
     private:
 
         Mech*                   m_mech;

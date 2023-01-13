@@ -15,6 +15,9 @@
 
 #pragma once
 
+//FRC Includes
+#include <frc/shuffleboard/Shuffleboard.h>
+
 /// @brief Interface for adjustable/tunable items for testing purposes
 class AdjustableItem
 {

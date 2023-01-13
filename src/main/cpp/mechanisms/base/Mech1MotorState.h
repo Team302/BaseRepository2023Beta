@@ -46,6 +46,9 @@ class Mech1MotorState : public State
         double GetTarget() const {return m_target;}
         double GetRPS() const {return m_mechanism->GetSpeed();}
 
+        ///May move to protected later
+        void SetTarget(double newTarget) {m_target = newTarget;}
+
     protected:
         ControlData*    GetControlData() const {return m_control;}
 
