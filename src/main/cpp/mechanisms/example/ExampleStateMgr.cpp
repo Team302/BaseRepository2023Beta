@@ -125,11 +125,15 @@ void ExampleStateMgr::SetValues()
     }
 }
 
-/*
-void ExampleStateMgr::GetValues()
+
+void ExampleStateMgr::ResetValues()
 {
-    
-}*/
+    std::vector<State*> states = GetStateVector();
+    for(auto state : states)
+    {
+        //con
+    }
+}
 
 bool ExampleStateMgr::HasDifferences()
 {

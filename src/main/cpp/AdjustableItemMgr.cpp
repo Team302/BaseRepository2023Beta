@@ -34,8 +34,7 @@ AdjustableItemMgr* AdjustableItemMgr::GetInstance()
 }
 
 /// @brief
-AdjustableItemMgr::AdjustableItemMgr() : m_adjustableItems(),
-                                         m_enabled(false)
+AdjustableItemMgr::AdjustableItemMgr() : m_adjustableItems()
 {
     m_enableButton = frc::Shuffleboard::GetTab("Tuning").Add("Enable Live Tuning", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
 }
@@ -61,13 +60,27 @@ void AdjustableItemMgr::ListenForUpdates()
         m_resetButton = frc::Shuffleboard::GetTab("Tuning").Add("Reset Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
         m_getDiffsButton = frc::Shuffleboard::GetTab("Tuning").Add("Show Differences", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
         m_enableButton->SetBoolean(false);
+        m_enabled = true;
     }
 
-    if(m_submitButton->GetBoolean(false))
+    if(m_enabled)
     {
-        for(auto item : m_adjustableItems)
+        if(m_submitButton->GetBoolean(false))
         {
-            item->SetValues();
+            for(auto item : m_adjustableItems)
+            {
+                item->SetValues();
+            }
+            m_submitButton->SetBoolean(false);
+        }
+
+        if(m_resetButton->GetBoolean(false))
+        {
+            for(auto item: m_adjustableItems)
+            {
+                item->ResetValues();
+            }
+            m_resetButton->SetBoolean(false);
         }
     }
 }

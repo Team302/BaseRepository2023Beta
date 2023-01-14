@@ -53,7 +53,7 @@ class AdjustableItemMgr
 
         static AdjustableItemMgr*   m_instance;
 
-        bool                        m_enabled;
+        bool                        m_enabled = false;
 
         nt::GenericEntry*            m_enableButton;
         nt::GenericEntry*            m_submitButton;

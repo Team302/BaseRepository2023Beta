@@ -65,7 +65,7 @@ class ExampleStateMgr : public StateMgr, public AdjustableItem
         //Adjustable Item Overrides
         void SetValues() override;
 
-        //void GetValues() override;
+        void ResetValues() override;
 
         bool HasDifferences() override;
         

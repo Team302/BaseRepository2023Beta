@@ -29,8 +29,8 @@ class AdjustableItem
         /// @brief Set values based on network table values
         virtual void SetValues() = 0;
 
-        /// @brief Get values from AdjustableItem
-        //virtual void GetValues() = 0;
+        /// @brief Reset network tables and target values to their defaults (parsed from xml)
+        virtual void ResetValues() = 0;
 
         /// @brief Return if there are differences between xml/default values and network table values
         /// @return bool - item has differences
