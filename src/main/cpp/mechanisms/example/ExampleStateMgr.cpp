@@ -115,13 +115,16 @@ int ExampleStateMgr::GetCurrentStateParam
 void ExampleStateMgr::SetValues()
 {
     std::vector<State*> states = GetStateVector();
-    //state->SetTarget(new value from network table);
 
     for(auto state : states)
     {
-        /// @TODO: Only set target of states that have differences
         ExampleState* convertedState = (ExampleState*) state;
-        convertedState->SetTarget(m_tuningTable->GetNumber(state->GetStateName(), convertedState->GetOriginalTarget()));
+        double ntTargetValue = m_tuningTable->GetNumber(state->GetStateName()+"-Target", convertedState->GetOriginalTarget());
+
+        if(ntTargetValue != convertedState->GetOriginalTarget())
+        {
+            convertedState->SetTarget(ntTargetValue);
+        }
     }
 }
 
@@ -147,6 +150,6 @@ void ExampleStateMgr::PopulateNetworkTable()
     for(int i = 0; i < states.size(); i++)
     {
         Mech1MotorState* state = (Mech1MotorState*) states[i];
-        m_tuningTable->PutNumber(states[i]->GetStateName(), state->GetOriginalTarget());
+        m_tuningTable->PutNumber(states[i]->GetStateName()+"-Target", state->GetOriginalTarget());
     }
 }
