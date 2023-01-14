@@ -197,9 +197,6 @@ int StateMgr::GetCurrentStateParam
 
 void StateMgr::LogInformation() const
 {
-    /// DEBUG
-    return;
-
     if (m_mech != nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentStateID);
