@@ -68,6 +68,8 @@ class ExampleStateMgr : public StateMgr, public AdjustableItem
         void ResetValues() override;
 
         bool HasDifferences() override;
+
+        void ShowDifferences() override;
         
         void PopulateNetworkTable() override;
     private:

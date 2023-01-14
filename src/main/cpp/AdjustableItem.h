@@ -36,6 +36,9 @@ class AdjustableItem
         /// @return bool - item has differences
         virtual bool HasDifferences() = 0;
 
+        /// @brief Will log the values that are different from xml
+        virtual void ShowDifferences() = 0;
+
         /// @brief Add adjustable values onto networktable (under the name from xml plus "-Tuner")
         virtual void PopulateNetworkTable() = 0;
     protected:

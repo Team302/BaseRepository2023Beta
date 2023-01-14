@@ -82,6 +82,16 @@ void AdjustableItemMgr::ListenForUpdates()
             }
             m_resetButton->SetBoolean(false);
         }
+
+        if(m_getDiffsButton->GetBoolean(false))
+        {
+            std::vector<AdjustableItem*> itemsWithDiffs = CheckForDifferences();
+            for(auto item : itemsWithDiffs)
+            {
+                item->ShowDifferences();
+            }
+            m_getDiffsButton->SetBoolean(false);
+        }
     }
 }
 

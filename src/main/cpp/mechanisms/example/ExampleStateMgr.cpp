@@ -13,6 +13,7 @@
 /// OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 #include <map>
+#include <string>
 
 // FRC includes
 
@@ -25,6 +26,7 @@
 #include <mechanisms/example/Example.h>
 #include <mechanisms/example/ExampleState.h>
 #include <mechanisms/example/ExampleStateMgr.h>
+#include <utils/Logger.h>
 
 // Third Party Includes
 
@@ -142,7 +144,31 @@ void ExampleStateMgr::ResetValues()
 
 bool ExampleStateMgr::HasDifferences()
 {
-    return true;
+    std::vector<State*> states = GetStateVector();
+    for(auto state : states)
+    {
+        ExampleState* convertedState = (ExampleState*) state;
+        double ntTargetValue = m_tuningTable->GetNumber(state->GetStateName()+"-Target", convertedState->GetOriginalTarget());
+        if(ntTargetValue != convertedState->GetOriginalTarget())
+        {
+            return true;
+        }
+    }
+}
+
+void ExampleStateMgr::ShowDifferences()
+{
+    std::vector<State*> states = GetStateVector();
+    for(auto state : states)
+    {
+        ExampleState* convertedState = (ExampleState*) state;
+        double ntTargetValue = m_tuningTable->GetNumber(state->GetStateName()+"-Target", convertedState->GetOriginalTarget());
+        if(ntTargetValue != convertedState->GetOriginalTarget())
+        {
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, convertedState->GetExample()->GetNetworkTableName(), state->GetStateName(),
+            "New Target: " + std::to_string(convertedState->GetCurrentTarget()));
+        }
+    }
 }
 
 void ExampleStateMgr::PopulateNetworkTable()
