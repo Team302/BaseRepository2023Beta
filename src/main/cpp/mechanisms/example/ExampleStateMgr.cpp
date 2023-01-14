@@ -115,8 +115,14 @@ int ExampleStateMgr::GetCurrentStateParam
 void ExampleStateMgr::SetValues()
 {
     std::vector<State*> states = GetStateVector();
-    ExampleState* state = (ExampleState*)states[0];
     //state->SetTarget(new value from network table);
+
+    for(auto state : states)
+    {
+        /// @TODO: Only set target of states that have differences
+        ExampleState* convertedState = (ExampleState*) state;
+        convertedState->SetTarget(m_tuningTable->GetNumber(state->GetStateName(), convertedState->GetOriginalTarget()));
+    }
 }
 
 /*
@@ -133,7 +139,6 @@ bool ExampleStateMgr::HasDifferences()
 void ExampleStateMgr::PopulateNetworkTable()
 {
     std::vector<State*> states = GetStateVector();
-    m_tuningTable->PutString("Test", "Test");
     
     for(int i = 0; i < states.size(); i++)
     {

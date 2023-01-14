@@ -56,4 +56,8 @@ class AdjustableItemMgr
         bool                        m_enabled;
 
         nt::GenericEntry*            m_enableButton;
+        nt::GenericEntry*            m_submitButton;
+        nt::GenericEntry*            m_resetButton;
+        nt::GenericEntry*            m_getDiffsButton;
+        
 };

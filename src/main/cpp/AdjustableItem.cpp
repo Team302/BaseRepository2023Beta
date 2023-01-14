@@ -17,9 +17,6 @@
 #include <AdjustableItem.h>
 #include <AdjustableItemMgr.h>
 
-/// DEBUG
-
-
 /// @brief when constructed, add to array of other adjustable items
 AdjustableItem::AdjustableItem()
 {

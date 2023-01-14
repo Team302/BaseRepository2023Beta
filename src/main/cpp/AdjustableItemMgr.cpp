@@ -16,9 +16,6 @@
 //C++ Includes
 #include <vector>
 
-/// DEBUG
-#include <iostream>
-
 //FRC Includes
 #include <frc/shuffleboard/Shuffleboard.h>
 
@@ -60,10 +57,18 @@ void AdjustableItemMgr::ListenForUpdates()
         PopulateNetworkTables();
 
         //Add other buttons onto dashboard
-        frc::Shuffleboard::GetTab("Tuning").Add("Submit Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
-        frc::Shuffleboard::GetTab("Tuning").Add("Reset Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
-        frc::Shuffleboard::GetTab("Tuning").Add("Show Differences", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        m_submitButton = frc::Shuffleboard::GetTab("Tuning").Add("Submit Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        m_resetButton = frc::Shuffleboard::GetTab("Tuning").Add("Reset Changes", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
+        m_getDiffsButton = frc::Shuffleboard::GetTab("Tuning").Add("Show Differences", false).WithWidget(frc::BuiltInWidgets::kToggleButton).GetEntry();
         m_enableButton->SetBoolean(false);
+    }
+
+    if(m_submitButton->GetBoolean(false))
+    {
+        for(auto item : m_adjustableItems)
+        {
+            item->SetValues();
+        }
     }
 }
 
@@ -83,9 +88,6 @@ std::vector<AdjustableItem*> AdjustableItemMgr::CheckForDifferences()
 
 void AdjustableItemMgr::PopulateNetworkTables()
 {
-    /// DEBUG
-    std::cout << m_adjustableItems.size() << std::endl;
-
     for(auto item: m_adjustableItems)
     {
         item->PopulateNetworkTable();
