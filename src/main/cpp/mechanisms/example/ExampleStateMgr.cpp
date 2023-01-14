@@ -134,7 +134,9 @@ void ExampleStateMgr::ResetValues()
     std::vector<State*> states = GetStateVector();
     for(auto state : states)
     {
-        //con
+        ExampleState* convertedState = (ExampleState*) state;
+        convertedState->SetTarget(convertedState->GetOriginalTarget());
+        m_tuningTable->PutNumber(state->GetStateName()+"-Target", convertedState->GetOriginalTarget());
     }
 }
 
