@@ -32,7 +32,7 @@ using namespace std;
 
 void StateMgrHelper::InitStateMgrs()
 {
-    //ExampleStateMgr::GetInstance();
+    ExampleStateMgr::GetInstance();
     //@ADDMech Add mechanisms here
 }
 

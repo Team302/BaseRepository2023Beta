@@ -47,6 +47,7 @@ Mech1MotorState::Mech1MotorState
     m_mechanism( mechanism ),
     m_control( control ),
     m_target( target ),
+    m_originalTarget( target ),
     m_positionBased( false ),
     m_speedBased( false )
 {
@@ -176,7 +177,7 @@ void Mech1MotorState::LogInformation() const
         auto idStatenameSpeed = idStatename + string(" - Speed");
 
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatename, GetStateName());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatenameTarget, GetTarget());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatenameTarget, GetCurrentTarget());
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, ntName, idStatenameSpeed, GetRPS());
     }
 }

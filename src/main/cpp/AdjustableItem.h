@@ -17,6 +17,7 @@
 
 //FRC Includes
 #include <frc/shuffleboard/Shuffleboard.h>
+#include <networktables/NetworkTableInstance.h>
 
 /// @brief Interface for adjustable/tunable items for testing purposes
 class AdjustableItem
@@ -29,7 +30,7 @@ class AdjustableItem
         virtual void SetValues() = 0;
 
         /// @brief Get values from AdjustableItem
-        virtual void GetValues() = 0;
+        //virtual void GetValues() = 0;
 
         /// @brief Return if there are differences between xml/default values and network table values
         /// @return bool - item has differences
@@ -37,4 +38,6 @@ class AdjustableItem
 
         /// @brief Add adjustable values onto networktable (under the name from xml plus "-Tuner")
         virtual void PopulateNetworkTable() = 0;
+    protected:
+        std::shared_ptr<nt::NetworkTable> GetShuffleboardTable();
 };

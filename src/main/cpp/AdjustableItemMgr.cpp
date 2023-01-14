@@ -16,6 +16,9 @@
 //C++ Includes
 #include <vector>
 
+/// DEBUG
+#include <iostream>
+
 //FRC Includes
 #include <frc/shuffleboard/Shuffleboard.h>
 
@@ -80,6 +83,9 @@ std::vector<AdjustableItem*> AdjustableItemMgr::CheckForDifferences()
 
 void AdjustableItemMgr::PopulateNetworkTables()
 {
+    /// DEBUG
+    std::cout << m_adjustableItems.size() << std::endl;
+
     for(auto item: m_adjustableItems)
     {
         item->PopulateNetworkTable();

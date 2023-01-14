@@ -3,17 +3,17 @@
 <statedata>
 	<controlData identifier="openloop" 
 	             mode="PERCENT_OUTPUT"/>
-    <mechanismTarget stateIdentifier="OFF"
+    <mechanismTarget stateIdentifier="EXAMPLE_OFF"
 	                 controlDataIdentifier="openloop"
 	                 controlDataIdentifier2="openloop"
 					 value="0.0"
 					 secondValue="0.0"/>
-	<mechanismTarget stateIdentifier="FORWARD"
+	<mechanismTarget stateIdentifier="EXAMPLE_FORWARD"
 	                 controlDataIdentifier="openloop"
 	                 controlDataIdentifier2="openloop"
 					 value="0.0"
 					 secondValue="0.0"/>
-	<mechanismTarget stateIdentifier="REVERSE"
+	<mechanismTarget stateIdentifier="EXAMPLE_REVERSE"
 	                 controlDataIdentifier="openloop"
 	                 controlDataIdentifier2="openloop"
 					 value="1.0"

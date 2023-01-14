@@ -36,7 +36,9 @@ ExampleState::ExampleState
     ControlData*                    control, 
     double                          target
 ) : Mech1MotorState( MechanismFactory::GetMechanismFactory()->GetExample(), stateName, stateId, control, target),
-    m_example(MechanismFactory::GetMechanismFactory()->GetExample())
+    m_example(MechanismFactory::GetMechanismFactory()->GetExample()),
+    m_parsedTarget(target),
+    m_target(target)
 {
     
 }

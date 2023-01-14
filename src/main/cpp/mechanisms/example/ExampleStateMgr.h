@@ -65,13 +65,12 @@ class ExampleStateMgr : public StateMgr, public AdjustableItem
         //Adjustable Item Overrides
         void SetValues() override;
 
-        void GetValues() override;
+        //void GetValues() override;
 
         bool HasDifferences() override;
         
         void PopulateNetworkTable() override;
     private:
-
         ExampleStateMgr();
         ~ExampleStateMgr() = default;
         
@@ -81,4 +80,6 @@ class ExampleStateMgr : public StateMgr, public AdjustableItem
         const StateStruc m_offState = {EXAMPLE_STATE::OFF, m_exampleOffXmlString, StateType::EXAMPLE_STATE, true};
         const StateStruc m_forwardState = {EXAMPLE_STATE::FORWARD, m_exampleForwardXmlString, StateType::EXAMPLE_STATE, false};
         const StateStruc m_reverseState = {EXAMPLE_STATE::REVERSE, m_exampleReverseXmlString, StateType::EXAMPLE_STATE, false};
+
+        std::shared_ptr<nt::NetworkTable> m_tuningTable = nullptr;
 };

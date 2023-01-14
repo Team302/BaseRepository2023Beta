@@ -86,7 +86,7 @@ bool Mech1IndMotorSolenoidState::AtTarget() const
 
 double Mech1IndMotorSolenoidState::GetTarget() const
 {
-    return m_motorState.get()->GetTarget();
+    return m_motorState.get()->GetCurrentTarget();
 }
 
 double Mech1IndMotorSolenoidState::GetRPS() const

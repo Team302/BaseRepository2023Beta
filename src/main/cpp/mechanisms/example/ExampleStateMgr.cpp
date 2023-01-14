@@ -49,6 +49,7 @@ ExampleStateMgr* ExampleStateMgr::GetInstance()
 
 /// @brief    initialize the state manager, parse the configuration file and create the states.
 ExampleStateMgr::ExampleStateMgr() : StateMgr(),
+                                     AdjustableItem(),
                                      m_example(MechanismFactory::GetMechanismFactory()->GetExample())
 {
     map<string, StateStruc> stateMap;
@@ -61,6 +62,8 @@ ExampleStateMgr::ExampleStateMgr() : StateMgr(),
     {
         m_example->AddStateMgr(this);
     }
+
+    m_tuningTable = GetShuffleboardTable()->GetSubTable(m_example->GetNetworkTableName()+"-Tuning");
 }   
 
 /// @brief Check if driver inputs or sensors trigger a state transition
@@ -116,10 +119,11 @@ void ExampleStateMgr::SetValues()
     //state->SetTarget(new value from network table);
 }
 
+/*
 void ExampleStateMgr::GetValues()
 {
     
-}
+}*/
 
 bool ExampleStateMgr::HasDifferences()
 {
@@ -128,5 +132,12 @@ bool ExampleStateMgr::HasDifferences()
 
 void ExampleStateMgr::PopulateNetworkTable()
 {
+    std::vector<State*> states = GetStateVector();
+    m_tuningTable->PutString("Test", "Test");
     
+    for(int i = 0; i < states.size(); i++)
+    {
+        Mech1MotorState* state = (Mech1MotorState*) states[i];
+        m_tuningTable->PutNumber(states[i]->GetStateName(), state->GetOriginalTarget());
+    }
 }

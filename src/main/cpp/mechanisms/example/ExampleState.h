@@ -38,5 +38,7 @@ class ExampleState : public Mech1MotorState
         Example* GetExample() const {return m_example;}
 
     private:
-        Example*        m_example;
+        Example*                m_example;
+        const double            m_parsedTarget;
+        double                  m_target;
 };
